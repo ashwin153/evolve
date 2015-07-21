@@ -6,14 +6,14 @@ import com.ashwin.evolve.genetic.GeneticChromosome;
 import com.ashwin.evolve.programs.Instruction;
 import com.ashwin.evolve.programs.Program;
 
-public class ProgramChromosome extends Program implements GeneticChromosome {
+public class ProgramChromosome extends Program implements GeneticChromosome<ProgramChromosome> {
 
 	public ProgramChromosome(List<Instruction> instructions) {
 		super(instructions);
 	}
 
 	@Override
-	public GeneticChromosome crossover(GeneticChromosome mate, double rate) {
+	public ProgramChromosome crossover(ProgramChromosome mate, double rate) {
 //		List<Instruction> i1 = new ArrayList<Instruction>(this.getInstructions());
 //		List<Instruction> i2 = new ArrayList<Instruction>(mate.getInstructions());
 //		
@@ -40,7 +40,7 @@ public class ProgramChromosome extends Program implements GeneticChromosome {
 	}
 
 	@Override
-	public GeneticChromosome mutate(double rate) {
+	public ProgramChromosome mutate(double rate) {
 //		List<Instruction> instr = getInstructions();
 //		for(int i = 0; i < instr.size(); i++)
 //			if(Math.random() < rate)

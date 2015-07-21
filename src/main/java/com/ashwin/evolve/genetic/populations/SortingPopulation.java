@@ -2,6 +2,7 @@ package com.ashwin.evolve.genetic.populations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import com.ashwin.evolve.genetic.GeneticPopulation;
 import com.ashwin.evolve.genetic.chromosomes.ProgramChromosome;
@@ -25,19 +26,30 @@ public class SortingPopulation extends GeneticPopulation<ProgramChromosome> {
 
 	private Memory _in, _wk;
 	private int[][] _tests;
-	private int _length;
+	private int _numInstrs, _numTests, _numInputs;
 
-	public SortingPopulation(int size) {
-		super(size);
+	public SortingPopulation(Properties props) throws ExecutionException {
+		super(props);
 		
-//		_in = new Memory("in", inputs, 0);
-//		_wk = new Memory("wk", 6, 0);
-//		_wk.write(0, inputs);
-//		
-//		_tests = new int[tests][inputs];
+		_numInstrs = Integer.valueOf(props.getProperty("ga.sorting.instrs"));
+		_numTests  = Integer.valueOf(props.getProperty("ga.sorting.tests"));
+		_numInputs = Integer.valueOf(props.getProperty("ga.sorting.inputs"));
+		
+		_in = new Memory("in", _numInputs, 0);
+		_wk = new Memory("wk", 5, 0);
+		_wk.write(0, _numInputs);
+	}
+	
+	@Override
+	public void evolve() {
+		// Regenerate the test cases before evolving the population. This
+		// ensures that the optimal algorithm can handle arbitrary inputs.
+		_tests = new int[_numTests][_numInputs];
 		for(int i = 0; i < _tests.length; i++)
 			for(int j = 0; j < _tests[i].length; j++)
 				_tests[i][j] = (int) (Math.random() * Integer.MAX_VALUE);
+	
+		super.evolve();
 	}
 	
 	@Override
@@ -53,10 +65,10 @@ public class SortingPopulation extends GeneticPopulation<ProgramChromosome> {
 				
 				// Reward programs that successfully sort inputs
 				if(after == 0)
-					fitness -= _length * 20;
+					fitness -= _numTests * 20;
 			} catch (ExecutionException e) {
 				// Penalize programs that do not terminate
-				fitness += _length * 20;
+				fitness += _numTests * 20;
 			}
 		}
 		
@@ -90,7 +102,7 @@ public class SortingPopulation extends GeneticPopulation<ProgramChromosome> {
 	public ProgramChromosome random() {
 		List<Instruction> instrs = new ArrayList<Instruction>();
 		
-		for(int i = 0; i < _length; i++) {
+		for(int i = 0; i < _numInstrs; i++) {
 			switch((int) (Math.random() * 7)) {
 				case  0: instrs.add(new Dec  (new DirectOperand(_wk))); break;
 				case  1: instrs.add(new Inc  (new DirectOperand(_wk))); break;
@@ -100,15 +112,15 @@ public class SortingPopulation extends GeneticPopulation<ProgramChromosome> {
 				case  5: instrs.add(new Xchg (new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in))); break;
 				default:
 					switch((int) (Math.random() * 9)) {
-						case  0: instrs.add(new Jeq  (new ImmediateOperand(-i, _length - i), new DirectOperand(_wk), new DirectOperand(_wk)));
-						case  1: instrs.add(new Jg   (new ImmediateOperand(-i, _length - i), new DirectOperand(_wk), new DirectOperand(_wk))); break;
-						case  2: instrs.add(new Jl   (new ImmediateOperand(-i, _length - i), new DirectOperand(_wk), new DirectOperand(_wk))); break;
-						case  3: instrs.add(new Jne  (new ImmediateOperand(-i, _length - i), new DirectOperand(_wk), new DirectOperand(_wk))); break;
-						case  4: instrs.add(new Jeq  (new ImmediateOperand(-i, _length - i), new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in))); break;
-						case  5: instrs.add(new Jg   (new ImmediateOperand(-i, _length - i), new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in))); break;
-						case  6: instrs.add(new Jl   (new ImmediateOperand(-i, _length - i), new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in))); break;
-						case  7: instrs.add(new Jne  (new ImmediateOperand(-i, _length - i), new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in))); break;
-						default: instrs.add(new Jmp  (new ImmediateOperand(-i, _length - i)));
+						case  0: instrs.add(new Jeq  (new ImmediateOperand(-i, _numInstrs - i), new DirectOperand(_wk), new DirectOperand(_wk)));
+						case  1: instrs.add(new Jg   (new ImmediateOperand(-i, _numInstrs - i), new DirectOperand(_wk), new DirectOperand(_wk))); break;
+						case  2: instrs.add(new Jl   (new ImmediateOperand(-i, _numInstrs - i), new DirectOperand(_wk), new DirectOperand(_wk))); break;
+						case  3: instrs.add(new Jne  (new ImmediateOperand(-i, _numInstrs - i), new DirectOperand(_wk), new DirectOperand(_wk))); break;
+						case  4: instrs.add(new Jeq  (new ImmediateOperand(-i, _numInstrs - i), new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in))); break;
+						case  5: instrs.add(new Jg   (new ImmediateOperand(-i, _numInstrs - i), new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in))); break;
+						case  6: instrs.add(new Jl   (new ImmediateOperand(-i, _numInstrs - i), new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in))); break;
+						case  7: instrs.add(new Jne  (new ImmediateOperand(-i, _numInstrs - i), new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in))); break;
+						default: instrs.add(new Jmp  (new ImmediateOperand(-i, _numInstrs - i)));
 					}
 			}
 		}

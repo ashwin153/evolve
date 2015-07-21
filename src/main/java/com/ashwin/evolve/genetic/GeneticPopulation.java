@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Properties;
 
-public abstract class GeneticPopulation<T extends GeneticChromosome> {
+public abstract class GeneticPopulation<T extends GeneticChromosome<T>> {
 	
 	private List<T> _pop;
+	
+	private double _crossoverRate, _mutationRate, _elitismRate;
+	private int _tournamentSize;
 
 	/**
 	 * Builds a randomized population of the specified size. This constructor is
@@ -15,21 +19,16 @@ public abstract class GeneticPopulation<T extends GeneticChromosome> {
 	 * 
 	 * @param size
 	 */
-	public GeneticPopulation(int size) {
+	public GeneticPopulation(Properties props) {
+		int size 		= Integer.valueOf(props.getProperty("ga.size"));
+		_crossoverRate  = Double.valueOf(props.getProperty("ga.crossover"));
+		_mutationRate   = Double.valueOf(props.getProperty("ga.mutation"));
+		_elitismRate    = Double.valueOf(props.getProperty("ga.elitism"));
+		_tournamentSize = Integer.valueOf(props.getProperty("ga.tournament"));
+		
 		_pop = new ArrayList<T>();
-		for(int i = 0; i < _pop.size(); i++)
+		for(int i = 0; i < size; i++)
 			_pop.add(random());
-		Collections.sort(_pop, new FitnessComparator());
-	}
-	
-	/**
-	 * Creates a population from an existing array of chromosomes. This
-	 * constructor is used when populations evolve.
-	 * 
-	 * @param pop
-	 */
-	public GeneticPopulation(List<T> pop) {
-		_pop = pop;
 		Collections.sort(_pop, new FitnessComparator());
 	}
 	
@@ -59,63 +58,46 @@ public abstract class GeneticPopulation<T extends GeneticChromosome> {
 	 * 
 	 * @return
 	 */
-	public GeneticPopulation<T> evolve() {
-//		GeneticProgram[] next = new GeneticProgram[_pop.length];
-//		
-//		// Population size MUST be even, because we do everything in multiples of 2
-//		int index = (int) (_pop.length * GeneticAlgorithm.ELITISM_RATE);
-//		if(index % 2 != 0) index++;
-//				
-//		// Elitism: Copy the best elements in the population into the next generation.
-//		// Because the population is sorted, take elements between [0, index)
-//		System.arraycopy(_pop, 0, next, 0, index);
-//		
-//		// While the next generation is not yet full, continue natural selection
-//		while (index < next.length) {
-//			try {
-//				// Select two parents using tournament selection
-//				GeneticProgram p1 = select();
-//				GeneticProgram p2 = select();
-//
-//				GeneticProgram[] off = p1.crossover(p2, GeneticAlgorithm.CROSSOVER_RATE);
-//				off[0].mutate(GeneticAlgorithm.MUTATION_RATE);
-//				off[1].mutate(GeneticAlgorithm.MUTATION_RATE);
-//
-//				// Put the offspring into the next generation and increment the
-//				// counter
-//				System.arraycopy(off, 0, next, index, 2);
-//				index += 2;
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
-//
-//		// Return a new generation of the population
-//		return new GeneticPopulation(next);
-		return null;
+	public void evolve() {
+		List<T> next = new ArrayList<T>(_pop.size());
+		
+		// Elitism: Copy the best elements in the population into the next
+		// genration. Because our population is always in sorted order, we
+		// simply need to copy over the best elements.
+		int index = (int) (_pop.size() * _elitismRate);
+		if(index % 2 != 0) index++;
+		next.addAll(_pop.subList(_pop.size() - index, _pop.size()));
+		
+		while(index < next.size()) {
+			// Select two parents using tournament selection.
+			T p1 = select(), p2 = select();
+			
+			// Perform crossover and mutation
+			T child = p1.crossover(p2, _crossoverRate);
+			child.mutate(_mutationRate);
+			next.add(child);
+		}
+		
+		_pop = next;
+		Collections.sort(_pop, new FitnessComparator());
 	}
 	
 	/**
 	 * Selects two individual from the population using tournament selection.
+	 * Because the population is always guarenteed to be in ascending sorted
+	 * fitness order, we can just randomly generate tournamentSize random
+	 * indicies and select the largest one.
 	 * 
 	 * @return
 	 */
-	public GeneticChromosome select() {
-//		GeneticProgram winner = null;
-//		double min = Double.MAX_VALUE;
-//		
-//		for(int i = 0; i < GeneticAlgorithm.TOURNAMENT_SIZE; i++) {
-//			int rand = (int) (Math.random() * _pop.length);
-//			double fitness = _pop[rand].getFitness();
-//			
-//			if(fitness < min) {
-//				winner = _pop[rand];
-//				min = fitness;
-//			}
-//		}
-//		
-//		return winner;
-		return null;
+	public T select() {
+		int maxIndex = Integer.MIN_VALUE;
+		for(int i = 0; i < _tournamentSize; i++) {
+			int rand = (int) (Math.random() * _pop.size());
+			if(rand > maxIndex)
+				maxIndex = rand;
+		}
+		return _pop.get(maxIndex);
 	}
 	
 	/**
