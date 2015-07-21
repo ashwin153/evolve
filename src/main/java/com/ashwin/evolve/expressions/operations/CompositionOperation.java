@@ -1,35 +1,35 @@
-package com.ashwin.evolve.expressions.operators;
+package com.ashwin.evolve.expressions.operations;
 
 import com.ashwin.evolve.expressions.Evaluable;
 import com.ashwin.evolve.expressions.Interval;
 
 public class CompositionOperation implements Evaluable {
 	
-	private Evaluable _left, _right;
+	private Evaluable _first, _second;
 	
-	public CompositionOperation(Evaluable left, Evaluable right) {
-		_left = left;
-		_right = right;
+	public CompositionOperation(Evaluable first, Evaluable second) {
+		_first = first;
+		_second = second;
 	}
 
 	@Override
 	public Interval getDomain() {
-		return _right.getDomain();
+		return _first.getDomain();
 	}
 
 	@Override
 	public Interval getCodomain() {
-		return _left.getCodomain();
+		return _second.getCodomain();
 	}
 
 	@Override
 	public double eval(double x) {
-		return _left.eval(_right.eval(x));
+		return _second.eval(_first.eval(x));
 	}
 
 	@Override
 	public String toString() {
-		return "(" + _left + ") * (" + _right + ")";
+		return "(" + _second + ") ○ (" + _first + ")";
 	}
 	
 }

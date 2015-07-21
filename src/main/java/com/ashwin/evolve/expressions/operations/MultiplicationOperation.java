@@ -1,4 +1,4 @@
-package com.ashwin.evolve.expressions.operators;
+package com.ashwin.evolve.expressions.operations;
 
 import com.ashwin.evolve.expressions.Evaluable;
 import com.ashwin.evolve.expressions.Interval;
@@ -31,7 +31,7 @@ public class MultiplicationOperation implements Evaluable {
 
 	@Override
 	public String toString() {
-		return "(" + _left + ") ○ (" + _right + ")";
+		return "(" + _left + ") * (" + _right + ")";
 	}
 	
 }

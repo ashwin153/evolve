@@ -11,7 +11,6 @@ public abstract class GeneticConfiguration {
 	
 	public GeneticConfiguration(int length) {
 		_length = length;
-		reset();
 	}
 	
 	/**

@@ -37,6 +37,7 @@ public class SortingConfiguration extends GeneticConfiguration {
 		_tests = new int[tests][inputs];
 		_wk = new Memory("wk", 6, 0);
 		_wk.write(0, inputs);
+		reset();
 	}
 	
 	@Override
