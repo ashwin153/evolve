@@ -22,4 +22,10 @@ public class LogarithmicFunction implements Evaluable {
 	public double eval(double x) {
 		return Math.log(x);
 	}
+	
+	@Override
+	public String toString() {
+		return "ln(x)";
+	}
+	
 }

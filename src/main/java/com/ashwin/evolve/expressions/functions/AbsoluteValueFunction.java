@@ -23,4 +23,9 @@ public class AbsoluteValueFunction implements Evaluable {
 		return Math.abs(x);
 	}
 
+	@Override
+	public String toString() {
+		return "abs(x)";
+	}
+	
 }

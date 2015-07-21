@@ -76,4 +76,9 @@ public class PowerFunction implements Evaluable {
 		return Math.pow(x, (double) _p / _q);
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("pow(x, %.2f)", (double) _p / _q);
+	}
+	
 }

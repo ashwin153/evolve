@@ -23,4 +23,9 @@ public class ExponentialFunction implements Evaluable {
 		return Math.pow(Math.E, x);
 	}
 
+	@Override
+	public String toString() {
+		return "exp(x)";
+	}
+	
 }

@@ -4,8 +4,14 @@ import com.ashwin.evolve.expressions.Evaluable;
 import com.ashwin.evolve.expressions.Interval;
 import com.ashwin.evolve.expressions.Range;
 
-public class CosFunction implements Evaluable {
+public class ConstantFunction implements Evaluable {
 
+	private double _value;
+	
+	public ConstantFunction(double value) {
+		_value = value;
+	}
+	
 	@Override
 	public Interval getDomain() {
 		return Interval.ALL;
@@ -14,17 +20,13 @@ public class CosFunction implements Evaluable {
 	@Override
 	public Interval getCodomain() {
 		return new Interval(new Range(
-				new Range.Endpoint(-1, true),
-				new Range.Endpoint(1, true)));
+				new Range.Endpoint(_value, true),
+				new Range.Endpoint(_value, true)));
 	}
 
 	@Override
 	public double eval(double x) {
-		return Math.cos(x);
+		return _value;
 	}
-	
-	@Override
-	public String toString() {
-		return "cos(x)";
-	}
+
 }

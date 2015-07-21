@@ -23,4 +23,9 @@ public class SinFunction implements Evaluable {
 		return Math.sin(x);
 	}
 
+	@Override
+	public String toString() {
+		return "sin(x)";
+	}
+	
 }
