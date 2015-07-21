@@ -29,4 +29,9 @@ public class MultiplicationOperation implements Evaluable {
 		return _left.eval(x) * _right.eval(x);
 	}
 
+	@Override
+	public String toString() {
+		return "(" + _left + ") ○ (" + _right + ")";
+	}
+	
 }

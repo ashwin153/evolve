@@ -27,4 +27,8 @@ public class ExponentiationOperation implements Evaluable {
 		return Math.pow(_base.eval(x), _power.eval(x));
 	}
 
+	@Override
+	public String toString() {
+		return "(" + _base + ") ^ (" + _power + ")";
+	}
 }

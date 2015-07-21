@@ -29,4 +29,8 @@ public class ConstantFunction implements Evaluable {
 		return _value;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("%.4f", _value);
+	}
 }
