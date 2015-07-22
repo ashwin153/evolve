@@ -22,6 +22,9 @@ import com.ashwin.evolve.programs.operands.IndirectOperand;
 
 public class SortingChromosome extends Program implements GeneticChromosome<SortingChromosome> {
 	
+	/** The number of tests used in fitness calculations. */
+	private static final int NUM_TESTS = 20;
+	
 	private Memory _in, _wk;
 	private double _fitness;
 	
@@ -42,7 +45,7 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 		
 		// Calculate the fitness of this chromosome using the number of
 		// inversions it is able to "fix" in a set of randomly generated numbers
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < SortingChromosome.NUM_TESTS; i++) {
 			try {
 				for (int j = 0; j < in.size(); j++)
 					_in.write(j, (int) (Math.random() * Integer.MAX_VALUE));
@@ -51,10 +54,10 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 				int before = SortingChromosome.getInversions(_in);
 				execute();
 				int after = SortingChromosome.getInversions(_in);
-				_fitness += (before - after) / before;
+				_fitness -= (after - before) / before;
 			} catch (ExecutionException e) {
 				// Penalize sorting programs that do not terminate
-				_fitness -= _in.size() * 20;
+				_fitness += _in.size();
 			}
 		}
 	}
@@ -112,7 +115,7 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 			case "Dec":  return new Dec  (new DirectOperand(_wk));
 			case "Inc":	 return new Inc  (new DirectOperand(_wk));
 			case "Xchg": return new Xchg (new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in));
-			case "Mov":	 
+			case "Mov":	
 			case "Jeq":  
 			case "Jg":
 			case "Jl":	 

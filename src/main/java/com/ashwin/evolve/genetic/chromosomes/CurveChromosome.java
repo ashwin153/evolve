@@ -46,8 +46,6 @@ public class CurveChromosome extends Expression implements GeneticChromosome<Cur
 
 	@Override
 	public double fitness() {
-		// The fitness of this expression is dependent on both accuracy and
-		// length. For now, let us only consider the accuracy problem.
 		double errSquared = 0.0;
 		for (int i = 0; i < _data.length; i++)
 			errSquared += Math.pow(eval(_data[i].getX()) - _data[i].getY(), 2);

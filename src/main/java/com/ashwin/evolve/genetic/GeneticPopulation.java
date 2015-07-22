@@ -9,9 +9,7 @@ import java.util.Properties;
 public class GeneticPopulation<T extends GeneticChromosome<T>> {
 	
 	private List<T> _pop;
-	
-	private double _crossoverRate, _mutationRate, _elitismRate;
-	private int _tournamentSize;
+	private Properties _props;
 
 	/**
 	 * Builds a randomized population of the specified size. This constructor is
@@ -20,12 +18,9 @@ public class GeneticPopulation<T extends GeneticChromosome<T>> {
 	 * @param size
 	 */
 	public GeneticPopulation(List<T> pop, Properties props) {
-		_crossoverRate  = Double.valueOf(props.getProperty("ga.crossover"));
-		_mutationRate   = Double.valueOf(props.getProperty("ga.mutation"));
-		_elitismRate    = Double.valueOf(props.getProperty("ga.elitism"));
-		_tournamentSize = Integer.valueOf(props.getProperty("ga.tournament"));
-		
 		_pop = pop;
+		_props = props;
+		
 		Collections.sort(_pop, new FitnessComparator());
 	}
 	
@@ -35,28 +30,32 @@ public class GeneticPopulation<T extends GeneticChromosome<T>> {
 	 * 
 	 * @return
 	 */
-	public void evolve() {
+	public GeneticPopulation<T> evolve() {
 		List<T> next = new ArrayList<T>(_pop.size());
+		double crossoverRate  = Double.valueOf(_props.getProperty("ga.crossover"));
+		double mutationRate   = Double.valueOf(_props.getProperty("ga.mutation"));
+		double elitismRate    = Double.valueOf(_props.getProperty("ga.elitism"));
+		int tournamentSize    = Integer.valueOf(_props.getProperty("ga.tournament"));
 		
 		// Elitism: Copy the best elements in the population into the next
 		// genration. Because our population is always in sorted order, we
 		// simply need to copy over the best elements.
-		int index = (int) (_pop.size() * _elitismRate);
-		if(index % 2 != 0) index++;
-		next.addAll(_pop.subList(_pop.size() - index, _pop.size()));
+		int index = (int) (_pop.size() * elitismRate);
+		next.addAll(_pop.subList(0, index));
 		
-		while(index < next.size()) {
-			// Select two parents using tournament selection.
-			T p1 = select(), p2 = select();
+		while(next.size() < _pop.size()) {
+			// Select two parents using tournament selection, perform crossover
+			// and mutation, and add the resulting child into the next
+			// population.
+			T p1 = select(tournamentSize), p2 = select(tournamentSize);
 			
 			// Perform crossover and mutation
-			T child = p1.crossover(p2, _crossoverRate);
-			child.mutate(_mutationRate);
+			T child = p1.crossover(p2, crossoverRate);
+			child.mutate(mutationRate);
 			next.add(child);
 		}
 		
-		_pop = next;
-		Collections.sort(_pop, new FitnessComparator());
+		return new GeneticPopulation<T>(next, _props);
 	}
 	
 	/**
@@ -67,14 +66,14 @@ public class GeneticPopulation<T extends GeneticChromosome<T>> {
 	 * 
 	 * @return
 	 */
-	public T select() {
-		int maxIndex = Integer.MIN_VALUE;
-		for(int i = 0; i < _tournamentSize; i++) {
+	public T select(int tournamentSize) {
+		int minIndex = Integer.MIN_VALUE;
+		for(int i = 0; i < tournamentSize; i++) {
 			int rand = (int) (Math.random() * _pop.size());
-			if(rand > maxIndex)
-				maxIndex = rand;
+			if(rand > minIndex)
+				minIndex = rand;
 		}
-		return _pop.get(maxIndex);
+		return _pop.get(minIndex);
 	}
 	
 	/**
