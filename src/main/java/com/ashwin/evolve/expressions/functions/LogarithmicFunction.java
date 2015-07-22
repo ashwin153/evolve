@@ -14,7 +14,7 @@ public class LogarithmicFunction implements Evaluable {
 	}
 
 	@Override
-	public Interval getCodomain() {
+	public Interval getImage() {
 		return Interval.ALL;
 	}
 

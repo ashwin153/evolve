@@ -12,7 +12,7 @@ public class AbsoluteValueFunction implements Evaluable {
 	}
 
 	@Override
-	public Interval getCodomain() {
+	public Interval getImage() {
 		return new Interval(new Range(
 				new Range.Endpoint(0, true),
 				new Range.Endpoint(Double.POSITIVE_INFINITY, false)));

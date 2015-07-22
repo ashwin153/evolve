@@ -4,10 +4,13 @@ import com.ashwin.evolve.expressions.Evaluable;
 import com.ashwin.evolve.expressions.Interval;
 
 public class CompositionOperation implements Evaluable {
-	
+
 	private Evaluable _first, _second;
 	
 	public CompositionOperation(Evaluable first, Evaluable second) {
+		if(!second.getDomain().contains(first.getImage()))
+			throw new IllegalArgumentException("Unable to compose functions");
+		
 		_first = first;
 		_second = second;
 	}
@@ -18,18 +21,12 @@ public class CompositionOperation implements Evaluable {
 	}
 
 	@Override
-	public Interval getCodomain() {
-		return _second.getCodomain();
+	public Interval getImage() {
+		return _second.getImage();
 	}
 
 	@Override
 	public double eval(double x) {
 		return _second.eval(_first.eval(x));
 	}
-
-	@Override
-	public String toString() {
-		return "(" + _second + ") ○ (" + _first + ")";
-	}
-	
 }

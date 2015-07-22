@@ -49,7 +49,7 @@ public class PowerFunction implements Evaluable {
 	}
 
 	@Override
-	public Interval getCodomain() {
+	public Interval getImage() {
 		// https://diversity.umn.edu/multicultural/sites/diversity.umn.edu.multicultural/files/M1271-elemfuncprop_000.pdf
 		if(_p % 2 != 0 && _q % 2 != 0)
 			if(_p > 0)

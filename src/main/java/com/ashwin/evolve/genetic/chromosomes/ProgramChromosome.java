@@ -40,7 +40,7 @@ public class ProgramChromosome extends Program implements GeneticChromosome<Prog
 	}
 
 	@Override
-	public ProgramChromosome mutate(double rate) {
+	public ProgramChromosome mutate(ProgramChromosome random, double rate) {
 //		List<Instruction> instr = getInstructions();
 //		for(int i = 0; i < instr.size(); i++)
 //			if(Math.random() < rate)

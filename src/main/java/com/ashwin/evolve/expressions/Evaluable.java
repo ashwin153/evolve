@@ -12,7 +12,7 @@ public interface Evaluable {
 	
 	public Interval getDomain();
 	
-	public Interval getCodomain();
+	public Interval getImage();
 
 	public double eval(double x);
 

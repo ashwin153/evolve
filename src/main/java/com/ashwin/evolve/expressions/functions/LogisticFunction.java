@@ -12,7 +12,7 @@ public class LogisticFunction implements Evaluable {
 	}
 
 	@Override
-	public Interval getCodomain() {
+	public Interval getImage() {
 		return new Interval(new Range(
 				new Range.Endpoint(0, false),
 				new Range.Endpoint(1, false)));

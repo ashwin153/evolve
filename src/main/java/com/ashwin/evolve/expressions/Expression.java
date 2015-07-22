@@ -14,8 +14,8 @@ public class Expression implements Evaluable {
 	}
 
 	@Override
-	public Interval getCodomain() {
-		return _root.getCodomain();
+	public Interval getImage() {
+		return _root.getImage();
 	}
 
 	@Override

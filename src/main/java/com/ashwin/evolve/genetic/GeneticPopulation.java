@@ -74,7 +74,7 @@ public abstract class GeneticPopulation<T extends GeneticChromosome<T>> {
 			
 			// Perform crossover and mutation
 			T child = p1.crossover(p2, _crossoverRate);
-			child.mutate(_mutationRate);
+			child.mutate(random(), _mutationRate);
 			next.add(child);
 		}
 		
