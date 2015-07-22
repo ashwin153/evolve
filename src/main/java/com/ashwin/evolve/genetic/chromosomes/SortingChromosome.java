@@ -145,19 +145,22 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 	
 	private Instruction getRandomInstruction() {
 		switch((int) (Math.random() * 5)) {
-		case 0: return getRandomInstruction(Dec.class);
-		case 1: return getRandomInstruction(Inc.class);
-		case 2: return getRandomInstruction(Mov.class);
-		case 3: return getRandomInstruction(Xchg.class);
-		default:
-			switch((int) (Math.random() * 5)) {
-				case 0:  return getRandomInstruction(Jeq.class);
-				case 1:  return getRandomInstruction(Jg.class);
-				case 2:  return getRandomInstruction(Jl.class);
-				case 3:  return getRandomInstruction(Jne.class);
-				default: return getRandomInstruction(Jmp.class);
-			}
-	}
+			case 0: return getRandomInstruction(Dec.class);
+			case 1: return getRandomInstruction(Inc.class);
+			case 2: return getRandomInstruction(Mov.class);
+			case 3: return getRandomInstruction(Xchg.class);
+			
+			// De-emphasize jump instructions; this reduces the probability that
+			// any given jump instruction will be selected. Think about it.
+			default:
+				switch((int) (Math.random() * 5)) {
+					case 0:  return getRandomInstruction(Jeq.class);
+					case 1:  return getRandomInstruction(Jg.class);
+					case 2:  return getRandomInstruction(Jl.class);
+					case 3:  return getRandomInstruction(Jne.class);
+					default: return getRandomInstruction(Jmp.class);
+				}
+		}
 	}
 	
 	/**
