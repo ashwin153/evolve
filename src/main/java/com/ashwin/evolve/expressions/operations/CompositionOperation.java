@@ -8,9 +8,6 @@ public class CompositionOperation implements Evaluable {
 	private Evaluable _first, _second;
 	
 	public CompositionOperation(Evaluable first, Evaluable second) {
-		if(!second.getDomain().contains(first.getImage()))
-			throw new IllegalArgumentException("Unable to compose functions");
-		
 		_first = first;
 		_second = second;
 	}

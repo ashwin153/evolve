@@ -22,4 +22,9 @@ public class Expression implements Evaluable {
 	public double eval(double x) {
 		return _root.eval(x);
 	}
+	
+	@Override
+	public String toString() {
+		return _root.toString();
+	}
 }

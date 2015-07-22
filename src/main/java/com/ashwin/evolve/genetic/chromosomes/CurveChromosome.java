@@ -1,17 +1,21 @@
 package com.ashwin.evolve.genetic.chromosomes;
 
+import java.awt.geom.Point2D;
+
 import com.ashwin.evolve.expressions.Evaluable;
 import com.ashwin.evolve.expressions.Expression;
 import com.ashwin.evolve.genetic.GeneticChromosome;
 
-public class ExpressionChromosome extends Expression implements GeneticChromosome<ExpressionChromosome> {
+public class CurveChromosome extends Expression implements GeneticChromosome<CurveChromosome> {
 	
-	public ExpressionChromosome(Evaluable root) {
+	private Point2D[] _data;
+	
+	public CurveChromosome(Evaluable root) {
 		super(root);
 	}
 
 	@Override
-	public ExpressionChromosome crossover(ExpressionChromosome mate, double rate) {
+	public CurveChromosome crossover(CurveChromosome mate, double rate) {
 //		GeneticExpression e1 = GeneticExpression.copy(this);
 //		GeneticExpression e2 = GeneticExpression.copy(expr);
 //		
@@ -36,8 +40,17 @@ public class ExpressionChromosome extends Expression implements GeneticChromosom
 	}
 
 	@Override
-	public ExpressionChromosome mutate(ExpressionChromosome random, double rate) {
+	public CurveChromosome mutate(double rate) {
 		return null;
 	}
 
+	@Override
+	public double fitness() {
+		// The fitness of this expression is dependent on both accuracy and
+		// length. For now, let us only consider the accuracy problem.
+		double errSquared = 0.0;
+		for (int i = 0; i < _data.length; i++)
+			errSquared += Math.pow(eval(_data[i].getX()) - _data[i].getY(), 2);
+		return errSquared;
+	}
 }

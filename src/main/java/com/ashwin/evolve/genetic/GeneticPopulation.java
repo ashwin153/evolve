@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 
-public abstract class GeneticPopulation<T extends GeneticChromosome<T>> {
+public class GeneticPopulation<T extends GeneticChromosome<T>> {
 	
 	private List<T> _pop;
 	
@@ -19,38 +19,15 @@ public abstract class GeneticPopulation<T extends GeneticChromosome<T>> {
 	 * 
 	 * @param size
 	 */
-	public GeneticPopulation(Properties props) {
-		int size 		= Integer.valueOf(props.getProperty("ga.size"));
+	public GeneticPopulation(List<T> pop, Properties props) {
 		_crossoverRate  = Double.valueOf(props.getProperty("ga.crossover"));
 		_mutationRate   = Double.valueOf(props.getProperty("ga.mutation"));
 		_elitismRate    = Double.valueOf(props.getProperty("ga.elitism"));
 		_tournamentSize = Integer.valueOf(props.getProperty("ga.tournament"));
 		
-		_pop = new ArrayList<T>();
-		for(int i = 0; i < size; i++)
-			_pop.add(random());
+		_pop = pop;
 		Collections.sort(_pop, new FitnessComparator());
 	}
-	
-	/**
-	 * Returns a randomized genetic chromosome. This is used to build the
-	 * initial population of the genetic population. Because each population
-	 * builds chromosomes differently, we leave the definition of this method to
-	 * subclasses.
-	 * 
-	 * @return
-	 */
-	abstract public T random();
-
-	/**
-	 * Returns the fitness of the specified chromosome. Because each population
-	 * will have a different cost function, we leave the definition of this
-	 * methods to subclasses.
-	 * 
-	 * @param chromosome
-	 * @return
-	 */
-	abstract public double fitness(T chromosome);
 	
 	/**
 	 * Evolves the population. Repeatedly selects individuals, mates them, and
@@ -74,7 +51,7 @@ public abstract class GeneticPopulation<T extends GeneticChromosome<T>> {
 			
 			// Perform crossover and mutation
 			T child = p1.crossover(p2, _crossoverRate);
-			child.mutate(random(), _mutationRate);
+			child.mutate(_mutationRate);
 			next.add(child);
 		}
 		
@@ -108,7 +85,7 @@ public abstract class GeneticPopulation<T extends GeneticChromosome<T>> {
 	 */
 	private class FitnessComparator implements Comparator<T> {
 		public int compare(T o1, T o2) {
-			return Double.compare(fitness(o1), fitness(o2));
+			return Double.compare(o1.fitness(), o2.fitness());
 		}
 	}
 }
