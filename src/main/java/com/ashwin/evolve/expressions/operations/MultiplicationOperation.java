@@ -43,7 +43,13 @@ public class MultiplicationOperation implements Evaluable {
 						new Range.Endpoint(u2.getValue() * l1.getValue(), u2.isClosed() && l1.isClosed()),
 						new Range.Endpoint(u2.getValue() * u1.getValue(), u2.isClosed() && u1.isClosed()));
 				Collections.sort(points);
-				sum.add(new Range(points.get(0), points.get(3)));
+				
+				List<Range.Endpoint> valid = new ArrayList<Range.Endpoint>();
+				for(Range.Endpoint point : points)
+					if(!Double.isNaN(point.getValue()))
+						valid.add(point);
+				
+				sum.add(new Range(valid.get(0), valid.get(valid.size() - 1)));
 			}
 			
 			image = image.union(new Interval(sum));

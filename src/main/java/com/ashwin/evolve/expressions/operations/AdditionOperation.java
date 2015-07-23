@@ -42,7 +42,7 @@ public class AdditionOperation implements Evaluable {
 				
 				sum.add(new Range(
 						new Range.Endpoint(l2.getValue() + l1.getValue(), l2.isClosed() && l1.isClosed()),
-						new Range.Endpoint(u2.getValue() + u1.getValue(), u2.isClosed() && u2.isClosed())));
+						new Range.Endpoint(u2.getValue() + u1.getValue(), u2.isClosed() && u1.isClosed())));
 			}
 			
 			image = image.union(new Interval(sum));

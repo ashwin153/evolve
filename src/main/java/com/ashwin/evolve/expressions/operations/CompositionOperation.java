@@ -26,4 +26,9 @@ public class CompositionOperation implements Evaluable {
 	public double eval(double x) {
 		return _second.eval(_first.eval(x));
 	}
+	
+	@Override
+	public String toString() {
+		return "(" + _second + ") ○ (" + _first + ")";
+	}
 }

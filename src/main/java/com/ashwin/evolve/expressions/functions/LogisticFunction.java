@@ -23,4 +23,8 @@ public class LogisticFunction implements Evaluable {
 		return 1.0 / (1.0 + Math.pow(Math.E, -x));
 	}
 
+	@Override
+	public String toString() {
+		return "logistic(x)";
+	}
 }

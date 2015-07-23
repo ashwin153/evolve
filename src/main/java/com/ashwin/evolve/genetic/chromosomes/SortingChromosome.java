@@ -28,6 +28,9 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 	/** The number of tests used in fitness calculations. */
 	private static final int NUM_TESTS = 60;
 	
+	/** The number of inputs used in each test. */
+	private static final int NUM_INPUTS = 30;
+	
 	private Memory _in, _wk;
 	private double _fitness;
 	
@@ -224,7 +227,7 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 	 */
 	public static GeneticPopulation<SortingChromosome> getRandomPopulation(int size, int length) {
 		List<SortingChromosome> chromosomes = new ArrayList<SortingChromosome>();
-		Memory in = new Memory("in", 30, 0);
+		Memory in = new Memory("in", NUM_INPUTS, 0);
 		Memory wk = new Memory("wk", 5, 0);
 		
 		for(int i = 0; i < size; i++) {
