@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ashwin.evolve.genetic.GeneticChromosome;
+import com.ashwin.evolve.genetic.GeneticPopulation;
 import com.ashwin.evolve.programs.Instruction;
 import com.ashwin.evolve.programs.Memory;
 import com.ashwin.evolve.programs.Operand;
@@ -50,7 +51,11 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 			try {
 				for (int j = 0; j < in.size(); j++)
 					_in.write(j, (int) (Math.random() * Integer.MAX_VALUE));
-
+				
+				int[] zeroes = new int[_wk.size()];
+				zeroes[0] = in.size();
+				_wk.write(0, zeroes);
+				
 				// Calculate the total number of inversions before and after execution
 				int before = SortingChromosome.getInversions(_in);
 				execute();
@@ -211,19 +216,25 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 	}
 	
 	/**
-	 * Builds a new randomized sorting chromosome of the specified length using
-	 * the specified input and working memory spaces.
+	 * Builds a new randomized population of sorting chromosomes of the specified length.
 	 * 
+	 * @param size number of programs
 	 * @param length length of program
-	 * @param in input memory
-	 * @param wk working memory
 	 * @return random chromosome
 	 */
-	public static SortingChromosome getRandomChromosome(int length, Memory in, Memory wk) {
-		List<Instruction> instrs = new ArrayList<Instruction>();
-		for(int i = 0; i < length; i++)
-			instrs.add(getRandomInstruction(i, length, in, wk));
-		return new SortingChromosome(instrs, in, wk);
+	public static GeneticPopulation<SortingChromosome> getRandomPopulation(int size, int length) {
+		List<SortingChromosome> chromosomes = new ArrayList<SortingChromosome>();
+		Memory in = new Memory("in", 30, 0);
+		Memory wk = new Memory("wk", 5, 0);
+		
+		for(int i = 0; i < size; i++) {
+			List<Instruction> instrs = new ArrayList<Instruction>();
+			for(int j = 0; j < length; j++)
+				instrs.add(getRandomInstruction(j, length, in, wk));
+			chromosomes.add(new SortingChromosome(instrs, in, wk));
+		}
+		
+		return new GeneticPopulation<SortingChromosome>(chromosomes);
 	}
 
 }

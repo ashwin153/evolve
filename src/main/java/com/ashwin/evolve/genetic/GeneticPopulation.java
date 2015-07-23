@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Properties;
 
 public class GeneticPopulation<T extends GeneticChromosome<T>> {
 	
 	private List<T> _pop;
-	private Properties _props;
 
 	/**
 	 * Builds a randomized population of the specified size. This constructor is
@@ -17,15 +15,19 @@ public class GeneticPopulation<T extends GeneticChromosome<T>> {
 	 * 
 	 * @param size
 	 */
-	public GeneticPopulation(List<T> pop, Properties props) {
-		_pop = pop;
-		_props = props;
+	public GeneticPopulation(List<T> pop) {
+		_pop = pop;		
 		
+		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 		Collections.sort(_pop, new FitnessComparator());
 	}
 	
 	public List<T> getChromosomes() {
 		return _pop;
+	}
+	
+	public double getBestFitness() {
+		return _pop.get(0).fitness();
 	}
 	
 	public double getAverageFitness() {
@@ -41,12 +43,9 @@ public class GeneticPopulation<T extends GeneticChromosome<T>> {
 	 * 
 	 * @return next generation of population
 	 */
-	public GeneticPopulation<T> evolve() {
+	public GeneticPopulation<T> evolve(double crossoverRate,
+			double mutationRate, double elitismRate, int tournamentSize) {
 		List<T> next = new ArrayList<T>(_pop.size());
-		double crossoverRate  = Double.valueOf(_props.getProperty("ga.crossover"));
-		double mutationRate   = Double.valueOf(_props.getProperty("ga.mutation"));
-		double elitismRate    = Double.valueOf(_props.getProperty("ga.elitism"));
-		int tournamentSize    = Integer.valueOf(_props.getProperty("ga.tournament"));
 		
 		// Elitism: Copy the best elements in the population into the next
 		// genration. Because our population is always in sorted order, we
@@ -55,7 +54,6 @@ public class GeneticPopulation<T extends GeneticChromosome<T>> {
 		int index = (int) (_pop.size() * elitismRate);
 		for(T chromosome : _pop.subList(0, index))
 			next.add(chromosome.mutate(0));
-//			next.add(chromosome);
 		
 		while(next.size() < _pop.size()) {
 			// Select two parents using tournament selection, perform crossover
@@ -69,7 +67,7 @@ public class GeneticPopulation<T extends GeneticChromosome<T>> {
 			next.add(child);
 		}
 		
-		return new GeneticPopulation<T>(next, _props);
+		return new GeneticPopulation<T>(next);
 	}
 	
 	/**
