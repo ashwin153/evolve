@@ -12,7 +12,7 @@ import com.ashwin.evolve.programs.exceptions.ExecutionException;
  */
 public class Program implements Instruction {
 	
-	public static final int MAX_INSTRUCTIONS = 500;
+	public static final int MAX_INSTRUCTIONS = 5000;
 		
 	private List<Instruction> _instructions;
 	

@@ -17,20 +17,20 @@ public class GeneticAlgorithm {
 		props.load(GeneticAlgorithm.class.getResourceAsStream("/ga.properties"));
 		
 		// Build the initial population
-		Memory in = new Memory("in", 5, 0);
+		Memory in = new Memory("in", 30, 0);
 		Memory wk = new Memory("wk", 5, 0);
 		wk.write(0, in.size());
 		
 		List<SortingChromosome> initial = new ArrayList<SortingChromosome>();
 		for(int i = 0; i < Integer.valueOf(props.getProperty("ga.size")); i++)
-			initial.add(SortingChromosome.getRandomChromosome(40, in, wk));
+			initial.add(SortingChromosome.getRandomChromosome(30, in, wk));
 		GeneticPopulation<SortingChromosome> pop = new GeneticPopulation<SortingChromosome>(initial, props);
 		System.out.println(0 + "\t" + pop.getChromosomes().get(0).fitness());
 
 		// Evolve the population for the specified number of generations
 		for(int gen = 1; gen <= Integer.valueOf(props.getProperty("ga.maxgen")); gen++) {
 			pop = pop.evolve();
-			System.out.println(gen + "\t" + pop.getChromosomes().get(0).fitness());
+			System.out.println(gen + "\t" + pop.getChromosomes().get(0).fitness() + "\t" + pop.getAverageFitness());
 		}
 		
 		System.out.println(pop.getChromosomes().get(0));

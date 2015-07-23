@@ -28,6 +28,13 @@ public class GeneticPopulation<T extends GeneticChromosome<T>> {
 		return _pop;
 	}
 	
+	public double getAverageFitness() {
+		double avg = 0.0;
+		for(T chromosome : _pop)
+			avg += chromosome.fitness();
+		return avg / _pop.size();
+	}
+	
 	/**
 	 * Evolves the population. Repeatedly selects individuals, mates them, and
 	 * mutates their children until a new population is generated.
@@ -43,9 +50,12 @@ public class GeneticPopulation<T extends GeneticChromosome<T>> {
 		
 		// Elitism: Copy the best elements in the population into the next
 		// genration. Because our population is always in sorted order, we
-		// simply need to copy over the best elements.
+		// simply need to copy over the best elements. The mutation hack forces
+		// the creation of new chromosomes.
 		int index = (int) (_pop.size() * elitismRate);
-		next.addAll(_pop.subList(0, index));
+		for(T chromosome : _pop.subList(0, index))
+			next.add(chromosome.mutate(0));
+//			next.add(chromosome);
 		
 		while(next.size() < _pop.size()) {
 			// Select two parents using tournament selection, perform crossover

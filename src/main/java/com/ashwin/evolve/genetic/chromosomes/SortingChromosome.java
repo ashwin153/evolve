@@ -58,7 +58,7 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 				_fitness += (double) (after - before) / before;
 			} catch (ExecutionException e) {
 				// Penalize sorting programs that do not terminate
-				_fitness += 10;
+				_fitness += 5;
 			}
 		}
 	}
@@ -125,6 +125,21 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 					inversions++;
 		return inversions;
 	}
+	
+	/**
+	 * Returns a random operand to use for jump instructions.
+	 * 
+	 * @param in
+	 * @param wk
+	 * @return
+	 */
+	private static Operand getRandomJumpOperand(Memory in, Memory wk) {
+		switch((int) (Math.random() * 3)) {
+			case 0:  return new DirectOperand(wk);
+			case 1:  return new IndirectOperand(wk, in);
+			default: return new ImmediateOperand(-in.size(), in.size());
+		}
+	}
 
 	/**
 	 * Returns a random instance of the instruction of the specified class. If
@@ -144,18 +159,17 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 			case "Inc":	 return new Inc  (new DirectOperand(wk));
 			case "Xchg": return new Xchg (new IndirectOperand(wk, in), new IndirectOperand(wk, in));
 			case "Mov":	 
-				switch((int) (Math.random() * 3)) {
+				switch((int) (Math.random() * 2)) {
 					case 0:  return new Mov  (new DirectOperand(wk), new DirectOperand(wk));
-					case 1:  return new Mov  (new DirectOperand(in), new DirectOperand(wk));
 					default: return new Mov  (new ImmediateOperand(-5, 5), new DirectOperand(wk));
 				}
 				
 			// Handle jump instructions separately so that we can extract out reused code.
 			default:
 				ImmediateOperand line = new ImmediateOperand(-index, length - index);
-				Operand o1 = (Math.random() < 0.5) ? new DirectOperand(wk) : new IndirectOperand(wk, in);
-				Operand o2 = (Math.random() < 0.5) ? new DirectOperand(wk) : new IndirectOperand(wk, in);
-				
+				Operand o1 = getRandomJumpOperand(in, wk);
+				Operand o2 = getRandomJumpOperand(in, wk);
+
 				switch(clazz.getSimpleName()) {
 					case "Jeq": return new Jeq (line, o1, o2);
 					case "Jg":  return new Jg  (line, o1, o2);
