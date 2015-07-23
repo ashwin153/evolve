@@ -24,11 +24,15 @@ public class GeneticPopulation<T extends GeneticChromosome<T>> {
 		Collections.sort(_pop, new FitnessComparator());
 	}
 	
+	public List<T> getChromosomes() {
+		return _pop;
+	}
+	
 	/**
 	 * Evolves the population. Repeatedly selects individuals, mates them, and
 	 * mutates their children until a new population is generated.
 	 * 
-	 * @return
+	 * @return next generation of population
 	 */
 	public GeneticPopulation<T> evolve() {
 		List<T> next = new ArrayList<T>(_pop.size());
@@ -64,15 +68,16 @@ public class GeneticPopulation<T extends GeneticChromosome<T>> {
 	 * fitness order, we can just randomly generate tournamentSize random
 	 * indicies and select the largest one.
 	 * 
-	 * @return
+	 * @return selected individual
 	 */
 	public T select(int tournamentSize) {
-		int minIndex = Integer.MIN_VALUE;
+		int minIndex = Integer.MAX_VALUE;
 		for(int i = 0; i < tournamentSize; i++) {
 			int rand = (int) (Math.random() * _pop.size());
-			if(rand > minIndex)
+			if(rand < minIndex)
 				minIndex = rand;
 		}
+		
 		return _pop.get(minIndex);
 	}
 	

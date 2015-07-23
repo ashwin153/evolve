@@ -17,7 +17,7 @@ public interface Instruction {
 	 * Executes the instruction and returns how much to increment the program
 	 * counter.
 	 * 
-	 * @return
+	 * @return how much to increment the pc
 	 * @throws ExecutionException
 	 */
 	public int execute() throws ExecutionException;

@@ -8,7 +8,7 @@ public interface GeneticChromosome<T extends GeneticChromosome<T>> {
 	 * methods to subclasses.
 	 * 
 	 * @param chromosome
-	 * @return
+	 * @return fitness
 	 */
 	abstract public double fitness();
 	
@@ -18,7 +18,7 @@ public interface GeneticChromosome<T extends GeneticChromosome<T>> {
 	 * 
 	 * @param mate
 	 * @param rate
-	 * @return
+	 * @return child
 	 */
 	public T crossover(T mate, double rate);
 	
@@ -28,7 +28,7 @@ public interface GeneticChromosome<T extends GeneticChromosome<T>> {
 	 * 
 	 * @param random
 	 * @param rate
-	 * @return
+	 * @return mutated chromosome
 	 */
 	public T mutate(double rate);
 	

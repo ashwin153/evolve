@@ -4,6 +4,8 @@ import java.awt.geom.Point2D;
 
 import com.ashwin.evolve.expressions.Evaluable;
 import com.ashwin.evolve.expressions.Expression;
+import com.ashwin.evolve.expressions.operations.AdditionOperation;
+import com.ashwin.evolve.expressions.operations.MultiplicationOperation;
 import com.ashwin.evolve.genetic.GeneticChromosome;
 
 public class CurveChromosome extends Expression implements GeneticChromosome<CurveChromosome> {
@@ -54,6 +56,45 @@ public class CurveChromosome extends Expression implements GeneticChromosome<Cur
 	@Override
 	public CurveChromosome mutate(double rate) {
 		return null;
+	}
+	
+	private static Evaluable getRandomEvaluable(int curDepth, int targetDepth) {
+		// Decrease the probability of selecting an operand as we get closer to
+		// the target depth; the probability of selecting an operand at the
+		// target depth should be zero.
+		double prob = 1.0 - 1.0 / Math.pow(targetDepth, 2) * Math.pow(curDepth, 2);
+
+		if(Math.random() < prob) {	
+			switch((int) (Math.random() * 3)) {
+				case 0:  return new AdditionOperation(left, right);
+				case 1:  return new MultiplicationOperation(left, right);
+				default: return new CompositionOperation(first, second);
+			}
+		} else {
+			switch((int) (Math.random() * 8)) {
+				case 0:  return new AbsoluteValueFunction();
+				case 1:  return new ConstantFunction();
+				case 2:  return new CosFunction();
+				case 3:  return new ExponentialFunction();
+				case 4:  return new LogarithmicFunction();
+				case 5:  return new LogisticFunction();
+				case 6:  return new SinFunction();
+				default: return new PowerFunction();
+			}
+		}
+	}
+	
+	/**
+	 * Returns a randomly generated curve chromosome with the specified target
+	 * depth. This method does not guarantee that the resulting chromosome will
+	 * be of the specified depth, but it does guarantee that it will not be
+	 * larger than this depth.
+	 * 
+	 * @param targetDepth
+	 * @return
+	 */
+	public static CurveChromosome getRandomChromosome(int targetDepth, Point2D[] data) {
+		return new CurveChromosome(getRandomEvaluable(0, targetDepth), data);
 	}
 	
 //	/**

@@ -6,6 +6,7 @@ import java.util.List;
 import com.ashwin.evolve.genetic.GeneticChromosome;
 import com.ashwin.evolve.programs.Instruction;
 import com.ashwin.evolve.programs.Memory;
+import com.ashwin.evolve.programs.Operand;
 import com.ashwin.evolve.programs.Program;
 import com.ashwin.evolve.programs.exceptions.ExecutionException;
 import com.ashwin.evolve.programs.instructions.Dec;
@@ -18,12 +19,13 @@ import com.ashwin.evolve.programs.instructions.Jne;
 import com.ashwin.evolve.programs.instructions.Mov;
 import com.ashwin.evolve.programs.instructions.Xchg;
 import com.ashwin.evolve.programs.operands.DirectOperand;
+import com.ashwin.evolve.programs.operands.ImmediateOperand;
 import com.ashwin.evolve.programs.operands.IndirectOperand;
 
 public class SortingChromosome extends Program implements GeneticChromosome<SortingChromosome> {
 	
 	/** The number of tests used in fitness calculations. */
-	private static final int NUM_TESTS = 20;
+	private static final int NUM_TESTS = 60;
 	
 	private Memory _in, _wk;
 	private double _fitness;
@@ -39,7 +41,6 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 	 */
 	public SortingChromosome(List<Instruction> instructions, Memory in, Memory wk) {
 		super(instructions);
-		
 		_in = in;
 		_wk = wk;
 		
@@ -54,10 +55,10 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 				int before = SortingChromosome.getInversions(_in);
 				execute();
 				int after = SortingChromosome.getInversions(_in);
-				_fitness -= (after - before) / before;
+				_fitness += (double) (after - before) / before;
 			} catch (ExecutionException e) {
 				// Penalize sorting programs that do not terminate
-				_fitness += _in.size();
+				_fitness += 10;
 			}
 		}
 	}
@@ -74,13 +75,13 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 		if(Math.random() < rate) {
 			// Generate two random numbers on [0, list.size()) swap the block of
 			// instructions between these random numbers in each of the programs.
-			List<Instruction> i2 = new ArrayList<Instruction>(mate.getInstructions());
 			int l = (int) (Math.random() * i1.size());
 			int h = (int) (Math.random() * (i1.size() - l));
-			
+
 			// Swap the exiting instructions at [l, l + h) in i1 with those in i2
+			List<Instruction> i2 = mate.getInstructions().subList(l, l + h);
 			i1.subList(l, l + h).clear();
-			i1.addAll(l, i2.subList(l, l + h));
+			i1.addAll(l, new ArrayList<Instruction>(i2));
 		}
 		
 		return new SortingChromosome(i1, _in, _wk);
@@ -95,75 +96,11 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 				// There are two ways to mutate an instruction: (1) randomly
 				// generate a completely new instruction or (2) randomly
 				// generate new operands for the existing intstruction.
-				if(Math.random() < 0.5)
-					instr.set(i, getRandomInstruction());
+				if(Math.random() < 0.75)
+					instr.set(i, getRandomInstruction(i, size(), _in, _wk));
 				else
-					instr.set(i, getRandomInstruction(instr.get(i).getClass()));
+					instr.set(i, getRandomInstruction(i, size(), _in, _wk, instr.get(i).getClass()));
 		return new SortingChromosome(instr, _in, _wk);
-	}
-
-	/**
-	 * Returns a random instance of the instruction of the specified class. If
-	 * the class is not a member of the instruction set for sorting programs,
-	 * then throws an illegal argument exception.
-	 * 
-	 * @param clazz
-	 * @return
-	 */
-	private Instruction getRandomInstruction(Class<? extends Instruction> clazz) {
-		switch(clazz.getSimpleName()) {
-			case "Dec":  return new Dec  (new DirectOperand(_wk));
-			case "Inc":	 return new Inc  (new DirectOperand(_wk));
-			case "Xchg": return new Xchg (new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in));
-			case "Mov":	
-			case "Jeq":  
-			case "Jg":
-			case "Jl":	 
-			case "Jne":		
-			case "Jmp":
-			default: throw new IllegalArgumentException("Unrecognized instruction type");
-		}
-		
-//		switch((int) (Math.random() * 7)) {
-//		case  0: return new Dec  (new DirectOperand(_wk));
-//		case  1: return new Inc  (new DirectOperand(_wk));
-//		case  2: return new Mov  (new DirectOperand(_in), new DirectOperand(_wk));
-//		case  3: return new Mov  (new DirectOperand(_wk), new DirectOperand(_wk));
-//		case  4: return new Mov  (new ImmediateOperand(-5, 5), new DirectOperand(_wk));
-//		case  5: return new Xchg (new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in));
-//		default:
-//			switch((int) (Math.random() * 9)) {
-//				case  0: return new Jeq  (new ImmediateOperand(-index, length - index), new DirectOperand(_wk), new DirectOperand(_wk));
-//				case  1: return new Jg   (new ImmediateOperand(-index, length - index), new DirectOperand(_wk), new DirectOperand(_wk));
-//				case  2: return new Jl   (new ImmediateOperand(-index, length - index), new DirectOperand(_wk), new DirectOperand(_wk));
-//				case  3: return new Jne  (new ImmediateOperand(-index, length - index), new DirectOperand(_wk), new DirectOperand(_wk));
-//				case  4: return new Jeq  (new ImmediateOperand(-index, length - index), new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in));
-//				case  5: return new Jg   (new ImmediateOperand(-index, length - index), new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in));
-//				case  6: return new Jl   (new ImmediateOperand(-index, length - index), new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in));
-//				case  7: return new Jne  (new ImmediateOperand(-index, length - index), new IndirectOperand(_wk, _in), new IndirectOperand(_wk, _in));
-//				default: return new Jmp  (new ImmediateOperand(-index, length - index));
-//			}
-//	}
-	}
-	
-	private Instruction getRandomInstruction() {
-		switch((int) (Math.random() * 5)) {
-			case 0: return getRandomInstruction(Dec.class);
-			case 1: return getRandomInstruction(Inc.class);
-			case 2: return getRandomInstruction(Mov.class);
-			case 3: return getRandomInstruction(Xchg.class);
-			
-			// De-emphasize jump instructions; this reduces the probability that
-			// any given jump instruction will be selected. Think about it.
-			default:
-				switch((int) (Math.random() * 5)) {
-					case 0:  return getRandomInstruction(Jeq.class);
-					case 1:  return getRandomInstruction(Jg.class);
-					case 2:  return getRandomInstruction(Jl.class);
-					case 3:  return getRandomInstruction(Jne.class);
-					default: return getRandomInstruction(Jmp.class);
-				}
-		}
 	}
 	
 	/**
@@ -176,11 +113,11 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 	 * * (inputs - 1) / 4; (x - (total delta inversions)/population_size) / x
 	 * tells us on average, what percentage of the inversions we are fixing.
 	 * 
-	 * @param memory
-	 * @return
+	 * @param memory memory space
+	 * @return number of inversions
 	 * @throws ExecutionException
 	 */
-	public static int getInversions(Memory memory) throws ExecutionException {
+	private static int getInversions(Memory memory) throws ExecutionException {
 		int inversions = 0;
 		for(int i = 0; i < memory.size(); i++)
 			for(int j = i + 1; j < memory.size(); j++)
@@ -188,4 +125,91 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 					inversions++;
 		return inversions;
 	}
+
+	/**
+	 * Returns a random instance of the instruction of the specified class. If
+	 * the class is not a member of the instruction set for sorting programs,
+	 * then throws an illegal argument exception.
+	 * 
+	 * @param index instruction index inside of program (used for jumps)
+	 * @param length length of program
+	 * @param in input memory
+	 * @param wk working memory
+	 * @param clazz instruction type
+	 * @return random instruction
+	 */
+	private static Instruction getRandomInstruction(int index, int length, Memory in, Memory wk, Class<? extends Instruction> clazz) {
+		switch(clazz.getSimpleName()) {
+			case "Dec":  return new Dec  (new DirectOperand(wk));
+			case "Inc":	 return new Inc  (new DirectOperand(wk));
+			case "Xchg": return new Xchg (new IndirectOperand(wk, in), new IndirectOperand(wk, in));
+			case "Mov":	 
+				switch((int) (Math.random() * 3)) {
+					case 0:  return new Mov  (new DirectOperand(wk), new DirectOperand(wk));
+					case 1:  return new Mov  (new DirectOperand(in), new DirectOperand(wk));
+					default: return new Mov  (new ImmediateOperand(-5, 5), new DirectOperand(wk));
+				}
+				
+			// Handle jump instructions separately so that we can extract out reused code.
+			default:
+				ImmediateOperand line = new ImmediateOperand(-index, length - index);
+				Operand o1 = (Math.random() < 0.5) ? new DirectOperand(wk) : new IndirectOperand(wk, in);
+				Operand o2 = (Math.random() < 0.5) ? new DirectOperand(wk) : new IndirectOperand(wk, in);
+				
+				switch(clazz.getSimpleName()) {
+					case "Jeq": return new Jeq (line, o1, o2);
+					case "Jg":  return new Jg  (line, o1, o2);
+					case "Jl":	return new Jl  (line, o1, o2);
+					case "Jne": return new Jne (line, o1, o2);
+					case "Jmp": return new Jmp (line);
+					default: throw new IllegalArgumentException("Unrecognized instruction type");
+				}
+		}
+	}
+	
+	/**
+	 * Returns a random instance of an arbitrary instruction.
+	 * 
+	 * @param index instruction index inside of program (used for jumps)
+	 * @param length length of program
+	 * @param in input memory
+	 * @param wk working memory
+	 * @return random instruction
+	 */
+	private static Instruction getRandomInstruction(int index, int length, Memory in, Memory wk) {
+		switch((int) (Math.random() * 5)) {
+			case 0: return getRandomInstruction(index, length, in, wk, Dec.class);
+			case 1: return getRandomInstruction(index, length, in, wk, Inc.class);
+			case 2: return getRandomInstruction(index, length, in, wk, Mov.class);
+			case 3: return getRandomInstruction(index, length, in, wk, Xchg.class);
+			
+			// De-emphasize jump instructions; this reduces the probability that
+			// any given jump instruction will be selected. Think about it.
+			default:
+				switch((int) (Math.random() * 5)) {
+					case 0:  return getRandomInstruction(index, length, in, wk, Jeq.class);
+					case 1:  return getRandomInstruction(index, length, in, wk, Jg.class);
+					case 2:  return getRandomInstruction(index, length, in, wk, Jl.class);
+					case 3:  return getRandomInstruction(index, length, in, wk, Jne.class);
+					default: return getRandomInstruction(index, length, in, wk, Jmp.class);
+				}
+		}
+	}
+	
+	/**
+	 * Builds a new randomized sorting chromosome of the specified length using
+	 * the specified input and working memory spaces.
+	 * 
+	 * @param length length of program
+	 * @param in input memory
+	 * @param wk working memory
+	 * @return random chromosome
+	 */
+	public static SortingChromosome getRandomChromosome(int length, Memory in, Memory wk) {
+		List<Instruction> instrs = new ArrayList<Instruction>();
+		for(int i = 0; i < length; i++)
+			instrs.add(getRandomInstruction(i, length, in, wk));
+		return new SortingChromosome(instrs, in, wk);
+	}
+
 }

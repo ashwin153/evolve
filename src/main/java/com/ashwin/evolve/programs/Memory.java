@@ -39,6 +39,13 @@ public class Memory {
 		return _cells.size();
 	}
 	
+	/**
+	 * Reads the value from memory at the specified address.
+	 * 
+	 * @param address location in memory
+	 * @return value
+	 * @throws ExecutionException invalid memory address
+	 */
 	public int read(int address) throws ExecutionException {
 		if(address < 0 || address >= _cells.size())
 			throw new ExecutionException("Memory address out of range.");
@@ -46,6 +53,13 @@ public class Memory {
 		return _cells.get(address);
 	}
 	
+	/**
+	 * Writes the specified value at the specified address in memory.
+	 * 
+	 * @param address location in memory
+	 * @param value value to write
+	 * @throws ExecutionException invalid memory address
+	 */
 	public void write(int address, int value) throws ExecutionException {
 		if(address < 0 || address >= _cells.size())
 			throw new ExecutionException("Memory address out of range.");
@@ -53,6 +67,14 @@ public class Memory {
 		_cells.set(address, value);
 	}
 	
+	/**
+	 * Writes the specified values beginning at the specified start address in
+	 * memory.
+	 * 
+	 * @param start first location in memory
+	 * @param values values to write
+	 * @throws ExecutionException start address invalid
+	 */
 	public void write(int start, int[] values) throws ExecutionException {
 		if(start < 0 || start + values.length - 1 >= _cells.size())
 			throw new ExecutionException("Memory address out of range.");

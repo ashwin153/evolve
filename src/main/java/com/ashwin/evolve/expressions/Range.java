@@ -1,5 +1,12 @@
 package com.ashwin.evolve.expressions;
 
+/**
+ * This class represents a range over the real numbers. Ranges start and end
+ * with an Endpoint.
+ * 
+ * @author ashwin
+ * @see Endpoint
+ */
 public class Range {
 	
 	private Endpoint _lower, _upper;
@@ -22,7 +29,7 @@ public class Range {
 	 * range.
 	 * 
 	 * @param oth
-	 * @return
+	 * @return true if contains; false otherwise
 	 */
 	public boolean contains(Range oth) {
 		return oth.equals(intersection(oth));
@@ -34,7 +41,7 @@ public class Range {
 	 * in the range (2, 3).
 	 * 
 	 * @param point
-	 * @return
+	 * @return true if contains; false otherwise
 	 */
 	public boolean contains(Endpoint point) {
 		if(point.equals(_lower) || point.equals(_upper))
@@ -50,8 +57,8 @@ public class Range {
 	 * largest lower and the smallest upper. If these two ranges do not overlap,
 	 * then their intersection is null.
 	 * 
-	 * @param oth
-	 * @return
+	 * @param oth other range
+	 * @return intersection
 	 */
 	public Range intersection(Range oth) {
 		if(_lower.compareTo(oth.getUpper()) <= 0 && _upper.compareTo(oth.getLower()) >= 0)
@@ -65,8 +72,8 @@ public class Range {
 	 * Returns the union of the specified ranges. If the ranges do not intersect
 	 * then their union is null.
 	 * 
-	 * @param oth
-	 * @return
+	 * @param oth other range
+	 * @return union
 	 */
 	public Range union(Range oth) {
 		if(intersection(oth) != null)
@@ -114,6 +121,14 @@ public class Range {
 				+ _upper.getValue() + ((_upper.isClosed()) ? "]" : ")");
 	}
 	
+	/**
+	 * This class represents an endpoint of a range. Endpoints can be either
+	 * open or closed and contain a value. Endpoints are also comparable; an
+	 * open endpoint at 4 is greater than a closed endpoint at 4.
+	 * 
+	 * @author ashwin
+	 * @see Range
+	 */
 	public static class Endpoint implements Comparable<Endpoint> {
 		
 		private double _value;

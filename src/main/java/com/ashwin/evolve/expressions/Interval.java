@@ -4,6 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class represents an interval notation. It is used to specify the domain
+ * and ranges of Evaluables. Intervals are composed of a series of Ranges and
+ * can be combined through intersection and union.
+ * 
+ * @author ashwin
+ * @see Evaluable
+ * @see Range
+ */
 public class Interval {
 	
 	public static final Interval ALL = new Interval(new Range(
