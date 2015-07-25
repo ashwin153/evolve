@@ -1,7 +1,12 @@
 package com.ashwin.evolve.expressions;
 
+import java.math.BigDecimal;
+
+
 public class Expression implements Evaluable {
 
+	public static final int PRECISION = 5;
+	
 	private Evaluable _root;
 	
 	public Expression(Evaluable root) {
@@ -19,7 +24,7 @@ public class Expression implements Evaluable {
 	}
 
 	@Override
-	public double eval(double x) {
+	public BigDecimal eval(BigDecimal x) {
 		return _root.eval(x);
 	}
 	

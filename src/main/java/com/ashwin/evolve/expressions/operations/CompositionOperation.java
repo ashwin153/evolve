@@ -1,5 +1,7 @@
 package com.ashwin.evolve.expressions.operations;
 
+import java.math.BigDecimal;
+
 import com.ashwin.evolve.expressions.Evaluable;
 import com.ashwin.evolve.expressions.Interval;
 
@@ -23,7 +25,7 @@ public class CompositionOperation implements Evaluable {
 	}
 
 	@Override
-	public double eval(double x) {
+	public BigDecimal eval(BigDecimal x) {
 		return _second.eval(_first.eval(x));
 	}
 	

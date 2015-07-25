@@ -1,5 +1,8 @@
 package com.ashwin.evolve.expressions;
 
+import java.math.BigDecimal;
+
+
 /**
  * This interface represents all objects that can be evaluated. Evaluable
  * objects must specify an interval of accepted inputs (domain) and an interval
@@ -33,6 +36,6 @@ public interface Evaluable {
 	 * @param x
 	 * @return output
 	 */
-	public double eval(double x);
+	public BigDecimal eval(BigDecimal x);
 
 }

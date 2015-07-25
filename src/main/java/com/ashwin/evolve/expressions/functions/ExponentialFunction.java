@@ -1,8 +1,12 @@
 package com.ashwin.evolve.expressions.functions;
 
+import java.math.BigDecimal;
+
 import com.ashwin.evolve.expressions.Evaluable;
+import com.ashwin.evolve.expressions.Expression;
 import com.ashwin.evolve.expressions.Interval;
 import com.ashwin.evolve.expressions.Range;
+import com.ashwin.evolve.expressions.calculator.BigFunctions;
 
 public class ExponentialFunction implements Evaluable {
 
@@ -19,8 +23,8 @@ public class ExponentialFunction implements Evaluable {
 	}
 
 	@Override
-	public double eval(double x) {
-		return Math.pow(Math.E, x);
+	public BigDecimal eval(BigDecimal x) {
+		return BigFunctions.exp(x, Expression.PRECISION);
 	}
 
 	@Override

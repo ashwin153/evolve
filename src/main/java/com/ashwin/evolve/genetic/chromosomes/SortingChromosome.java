@@ -174,7 +174,7 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 				
 			// Handle jump instructions separately so that we can extract out reused code.
 			default:
-				ImmediateOperand line = new ImmediateOperand(-index, length - index);
+				ImmediateOperand line = new ImmediateOperand(- index - 1, length - index + 1);
 				Operand o1 = getRandomJumpOperand(in, wk);
 				Operand o2 = getRandomJumpOperand(in, wk);
 

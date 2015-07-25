@@ -35,10 +35,10 @@ public class CurveChromosome extends Expression implements GeneticChromosome<Cur
 			new LogarithmicFunction(),
 			new LogisticFunction(),
 			new ConstantFunction(2),
-			new PowerFunction(2, 1),
-			new PowerFunction(-2, 1),
-			new PowerFunction(3, 2),
-			new PowerFunction(-3, 2)
+			new PowerFunction(2),
+			new PowerFunction(1.5),
+			new PowerFunction(0.75),
+			new PowerFunction(0.90)
 	);
 	
 	private List<Point2D> _data;
@@ -50,8 +50,8 @@ public class CurveChromosome extends Expression implements GeneticChromosome<Cur
 		
 		// The fitness is equal to the total squared differences between actual
 		// and observed values; less difference is better.
-		for(Point2D point : _data)
-			_fitness += Math.pow(eval(point.getX()) - point.getY(), 2);
+//		for(Point2D point : _data)
+//			_fitness += Math.pow(eval(point.getX()) - point.getY(), 2);
 	}
 	
 	@Override
@@ -125,6 +125,7 @@ public class CurveChromosome extends Expression implements GeneticChromosome<Cur
 			for(Evaluable func : CurveChromosome.FUNCTIONS)
 				if(func.getDomain().contains(domain))
 					funcs.add(func);
+			
 			return funcs.get((int) (Math.random() * funcs.size()));
 		}
 	}
@@ -151,7 +152,7 @@ public class CurveChromosome extends Expression implements GeneticChromosome<Cur
 		
 		List<CurveChromosome> chromosomes = new ArrayList<CurveChromosome>();
 		for(int i = 0; i < size; i++)
-			chromosomes.add(new CurveChromosome(getRandomEvaluable(0, 25, domain), data));
+			chromosomes.add(new CurveChromosome(getRandomEvaluable(0, 5, domain), data));
 		
 		return new GeneticPopulation<CurveChromosome>(chromosomes);
 	}

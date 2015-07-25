@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -19,13 +21,13 @@ public class AdditionOperationTest {
 	
 	@Test
 	public void testEval() {
-		when(_e1.eval(0)).thenReturn(1.0);
-		when(_e2.eval(0)).thenReturn(2.0);
+		when(_e1.eval(BigDecimal.ZERO)).thenReturn(BigDecimal.ONE);
+		when(_e2.eval(BigDecimal.ZERO)).thenReturn(BigDecimal.ONE);
 		
 		AdditionOperation oper = new AdditionOperation(_e1, _e2);
-		assertEquals(3, oper.eval(0), 0.0);
-		verify(_e1).eval(0);
-		verify(_e2).eval(0);
+		assertEquals(BigDecimal.valueOf(2), oper.eval(BigDecimal.ZERO));
+		verify(_e1).eval(BigDecimal.ZERO);
+		verify(_e2).eval(BigDecimal.ZERO);
 	}
 	
 }

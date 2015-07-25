@@ -1,5 +1,6 @@
 package com.ashwin.evolve.expressions.operations;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,8 +53,8 @@ public class AdditionOperation implements Evaluable {
 	}
 
 	@Override
-	public double eval(double x) {
-		return _left.eval(x) + _right.eval(x);
+	public BigDecimal eval(BigDecimal x) {
+		return _left.eval(x).add(_right.eval(x));
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package com.ashwin.evolve.expressions.functions;
 
+import java.math.BigDecimal;
+
 import com.ashwin.evolve.expressions.Evaluable;
 import com.ashwin.evolve.expressions.Interval;
 import com.ashwin.evolve.expressions.Range;
@@ -19,8 +21,8 @@ public class AbsoluteValueFunction implements Evaluable {
 	}
 
 	@Override
-	public double eval(double x) {
-		return Math.abs(x);
+	public BigDecimal eval(BigDecimal x) {
+		return x.abs();
 	}
 
 	@Override
