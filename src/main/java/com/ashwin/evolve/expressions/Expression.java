@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 
 
 public class Expression implements Evaluable {
-
-	public static final int PRECISION = 5;
 	
 	private Evaluable _root;
 	

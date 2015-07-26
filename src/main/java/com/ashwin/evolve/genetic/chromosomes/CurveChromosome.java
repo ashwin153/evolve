@@ -1,6 +1,7 @@
 package com.ashwin.evolve.genetic.chromosomes;
 
 import java.awt.geom.Point2D;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,10 +49,14 @@ public class CurveChromosome extends Expression implements GeneticChromosome<Cur
 		super(root);
 		_data = data;
 		
-		// The fitness is equal to the total squared differences between actual
-		// and observed values; less difference is better.
-//		for(Point2D point : _data)
-//			_fitness += Math.pow(eval(point.getX()) - point.getY(), 2);
+		// The fitness is equal to the average squared differences between actual
+		// and observed values; less average difference is better.
+		BigDecimal l = BigDecimal.valueOf(_data.size());
+		for(Point2D point : _data) {
+			BigDecimal x = BigDecimal.valueOf(point.getX());
+			BigDecimal y = BigDecimal.valueOf(point.getY());
+			_fitness += eval(x).subtract(y).pow(2).divide(l).doubleValue();
+		}
 	}
 	
 	@Override

@@ -3,10 +3,9 @@ package com.ashwin.evolve.expressions.functions;
 import java.math.BigDecimal;
 
 import com.ashwin.evolve.expressions.Evaluable;
-import com.ashwin.evolve.expressions.Expression;
 import com.ashwin.evolve.expressions.Interval;
 import com.ashwin.evolve.expressions.Range;
-import com.ashwin.evolve.expressions.calculator.BigFunctions;
+import com.ashwin.evolve.expressions.calculator.Calculator;
 
 public class PowerFunction implements Evaluable {
 	
@@ -32,8 +31,8 @@ public class PowerFunction implements Evaluable {
 
 	@Override
 	public BigDecimal eval(BigDecimal x) {
-		return BigFunctions.exp(BigFunctions.ln(x, Expression.PRECISION)
-				.multiply(BigDecimal.valueOf(_pow)), Expression.PRECISION);
+		return Calculator.exp(Calculator.ln(x, Evaluable.PRECISION)
+				.multiply(BigDecimal.valueOf(_pow)), Evaluable.PRECISION);
 	}
 	
 	@Override

@@ -13,6 +13,8 @@ import java.math.BigDecimal;
  */
 public interface Evaluable {
 	
+	public static final int PRECISION = 10;
+
 	/**
 	 * Returns the domain over which this Evaluable is valid. This domain is
 	 * guaranteed to be the EXACT domain over which this Evaluable is valid.
