@@ -1,19 +1,4 @@
-package com.ashwin.evolve.expressions.calculator;
-
-/*Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-  http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.*/
+package com.ashwin.evolve.expressions;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,20 +8,22 @@ import java.math.BigInteger;
  * BigDecimals. This product includes software developed at the Apache Software
  * Foundation (http://www.apache.org/) in the Apache BigFunctions Copyright 2014
  * project (https://github.com/tareknaj/BigFunctions). The software is licensed
- * undered the Apache License 2.0.
+ * undered the Apache License 2.0 (http://www.apache.org/licenses/LICENSE-2.0).
  * 
  * @author ashwin
  * 
  */
 public final class Calculator {
+	
     /**
-     * Compute x^exponent to a given scale.  Uses the same
-     * algorithm as class numbercruncher.mathutils.IntPower.
-     * @param x the value x
-     * @param exponent the exponent value
-     * @param scale the desired scale of the result
-     * @return the result value
-     */
+	 * Compute x^exponent to a given scale. Uses the same algorithm as class
+	 * numbercruncher.mathutils.IntPower.
+	 * 
+	 * @param x the value x
+	 * @param exponent the exponent value
+	 * @param scale the desired scale of the result
+	 * @return the result value
+	 */
     public static BigDecimal intPower(BigDecimal x, long exponent, int scale) {
         // If the exponent is negative, compute 1/(x^-exponent).
         if (exponent < 0)
@@ -61,13 +48,14 @@ public final class Calculator {
     }
 
     /**
-     * Compute the integral root of x to a given scale, x >= 0.
-     * Use Newton's algorithm.
-     * @param x the value of x
-     * @param index the integral root value
-     * @param scale the desired scale of the result
-     * @return the result value
-     */
+	 * Compute the integral root of x to a given scale, x >= 0. Use Newton's
+	 * algorithm.
+	 * 
+	 * @param x the value of x
+	 * @param index the integral root value
+	 * @param scale the desired scale of the result
+	 * @return the result value
+	 */
     public static BigDecimal intRoot(BigDecimal x, long index, int scale) {
         // Check that x >= 0.
         if (x.signum() < 0)
@@ -110,14 +98,14 @@ public final class Calculator {
         return x;
     }
 
-    /**
-     * Compute e^x to a given scale.
-     * Break x into its whole and fraction parts and
-     * compute (e^(1 + fraction/whole))^whole using Taylor's formula.
-     * @param x the value of x
-     * @param scale the desired scale of the result
-     * @return the result value
-     */
+	/**
+	 * Compute e^x to a given scale. Break x into its whole and fraction parts
+	 * and compute (e^(1 + fraction/whole))^whole using Taylor's formula.
+	 * 
+	 * @param x the value of x
+	 * @param scale the desired scale of the result
+	 * @return the result value
+	 */
     public static BigDecimal exp(BigDecimal x, int scale) {
         // e^0 = 1
         if (x.signum() == 0)
@@ -165,6 +153,7 @@ public final class Calculator {
 
     /**
      * Compute e^x to a given scale by the Taylor series.
+     * 
      * @param x the value of x
      * @param scale the desired scale of the result
      * @return the result value
@@ -203,6 +192,10 @@ public final class Calculator {
 
     /**
      * Compute the natural logarithm of x to a given scale, x > 0.
+     * 
+     * @param x
+     * @param scale
+     * @return
      */
     public static BigDecimal ln(BigDecimal x, int scale) {
         // Check that x > 0.
@@ -229,10 +222,15 @@ public final class Calculator {
         }
     }
 
-     /**
-     * Compute the natural logarithm of x to a given scale, x > 0.
-     * Use Newton's algorithm.
-     */
+
+    /**
+	 * Compute the natural logarithm of x to a given scale, x > 0. Use Newton's
+	 * algorithm.
+	 * 
+	 * @param x
+	 * @param scale
+	 * @return
+	 */
     private static BigDecimal lnNewton(BigDecimal x, int scale) {
         int sp1 = scale + 1;
         BigDecimal n = x;
@@ -262,6 +260,7 @@ public final class Calculator {
 
     /**
      * Compute the arctangent of x to a given scale, |x| < 1
+     * 
      * @param x the value of x
      * @param scale the desired scale of the result
      * @return the result value
@@ -279,12 +278,12 @@ public final class Calculator {
     }
 
     /**
-     * Compute the arctangent of x to a given scale
-     * by the Taylor series, |x| < 1
-     * @param x the value of x
-     * @param scale the desired scale of the result
-     * @return the result value
-     */
+	 * Compute the arctan of x to a given scale by the Taylor series, |x| < 1
+	 * 
+	 * @param x  the value of x
+	 * @param scale the desired scale of the result
+	 * @return the result value
+	 */
     private static BigDecimal arctanTaylor(BigDecimal x, int scale) {
         int sp1 = scale + 1;
         int i = 3;
@@ -322,8 +321,8 @@ public final class Calculator {
     }
 
     /**
-     * Compute the square root of x to a given scale, x >= 0.
-     * Use Newton's algorithm.
+     * Compute the square root of x to a given scale, x >= 0. Use Newton's algorithm.
+     * 
      * @param x the value of x
      * @param scale the desired scale of the result
      * @return the result value

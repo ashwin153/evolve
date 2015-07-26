@@ -30,7 +30,7 @@ public class SortingChromosome extends Program implements GeneticChromosome<Sort
 	
 	/** The number of inputs used in each test. */
 	private static final int NUM_INPUTS = 30;
-	
+		
 	private Memory _in, _wk;
 	private double _fitness;
 	

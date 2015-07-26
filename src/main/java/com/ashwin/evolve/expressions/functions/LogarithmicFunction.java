@@ -2,10 +2,10 @@ package com.ashwin.evolve.expressions.functions;
 
 import java.math.BigDecimal;
 
+import com.ashwin.evolve.expressions.Calculator;
 import com.ashwin.evolve.expressions.Evaluable;
 import com.ashwin.evolve.expressions.Interval;
 import com.ashwin.evolve.expressions.Range;
-import com.ashwin.evolve.expressions.calculator.Calculator;
 
 public class LogarithmicFunction implements Evaluable {
 
@@ -25,7 +25,7 @@ public class LogarithmicFunction implements Evaluable {
 
 	@Override
 	public BigDecimal eval(BigDecimal x) {
-		return Calculator.ln(x, Evaluable.PRECISION);
+		return Calculator.ln(x, PRECISION);
 	}
 	
 	@Override
