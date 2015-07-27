@@ -23,7 +23,7 @@ public class AdditionOperation implements Evaluable {
 	}
 
 	@Override
-	public Interval getImage() {
+	public Interval getCodomain() {
 		Interval image = new Interval();
 		
 		// Returns an approximation of the image of the sums of two functions.
@@ -32,12 +32,12 @@ public class AdditionOperation implements Evaluable {
 		// results. While this method is far from perfect, it enables us to
 		// quickly estimate the image. The returned approximation should ALWAYS
 		// be bigger than the actual image.
-		for(Range r1 : _left.getImage().getRanges()) {
+		for(Range r1 : _left.getCodomain().getRanges()) {
 			List<Range> sum = new ArrayList<Range>();
 			Range.Endpoint l1 = r1.getLower();
 			Range.Endpoint u1 = r1.getUpper();
 			
-			for(Range r2 : _right.getImage().getRanges()) {
+			for(Range r2 : _right.getCodomain().getRanges()) {
 				Range.Endpoint l2 = r2.getLower();
 				Range.Endpoint u2 = r2.getUpper();
 				

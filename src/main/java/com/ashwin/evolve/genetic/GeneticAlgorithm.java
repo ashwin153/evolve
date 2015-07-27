@@ -26,7 +26,7 @@ public class GeneticAlgorithm {
 		for(CurveChromosome c : curves) {
 			System.out.println(c);
 			System.out.println(c.getDomain());
-			System.out.println(c.getImage());
+			System.out.println(c.getCodomain());
 			System.out.println(c.eval(BigDecimal.ZERO));
 			System.out.println(c.eval(BigDecimal.ONE));
 			System.out.println(c.eval(BigDecimal.valueOf(10)));

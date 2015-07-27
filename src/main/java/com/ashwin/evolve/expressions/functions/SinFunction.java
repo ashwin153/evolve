@@ -14,7 +14,7 @@ public class SinFunction implements Evaluable {
 	}
 
 	@Override
-	public Interval getImage() {
+	public Interval getCodomain() {
 		return new Interval(new Range(
 				new Range.Endpoint(-1, true),
 				new Range.Endpoint(1, true)));

@@ -40,7 +40,7 @@ public class ConstantFunction implements Evaluable {
 	}
 
 	@Override
-	public Interval getImage() {
+	public Interval getCodomain() {
 		return new Interval(new Range(
 				new Range.Endpoint(_value, true),
 				new Range.Endpoint(_value, true)));

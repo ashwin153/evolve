@@ -20,8 +20,8 @@ public class CompositionOperation implements Evaluable {
 	}
 
 	@Override
-	public Interval getImage() {
-		return _second.getImage();
+	public Interval getCodomain() {
+		return _second.getCodomain();
 	}
 
 	@Override

@@ -24,13 +24,13 @@ public interface Evaluable {
 	public Interval getDomain();
 	
 	/**
-	 * Returns an APPROXIMATION of the image of this Evaluable. This
+	 * Returns an APPROXIMATION of the codomain of this Evaluable. This
 	 * approximation is guaranteed to be an OVERESTIMATE of the actual image of
 	 * the Evaluable.
 	 * 
 	 * @return image
 	 */
-	public Interval getImage();
+	public Interval getCodomain();
 
 	/**
 	 * Evaluates this Evaluable at the specified x-coordinate.

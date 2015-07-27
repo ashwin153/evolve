@@ -124,7 +124,7 @@ public class CurveChromosome extends Expression implements GeneticChromosome<Cur
 							getRandomEvaluable(curDepth + 1, targetDepth, domain));
 				default: 
 					Evaluable first  = getRandomEvaluable(curDepth + 1, targetDepth, domain);
-					Evaluable second = getRandomEvaluable(curDepth + 1, targetDepth, first.getImage()); 
+					Evaluable second = getRandomEvaluable(curDepth + 1, targetDepth, first.getCodomain()); 
 					return new CompositionOperation(first, second);
 			}
 		} else {

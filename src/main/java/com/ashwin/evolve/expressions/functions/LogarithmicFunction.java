@@ -17,7 +17,7 @@ public class LogarithmicFunction implements Evaluable {
 	}
 
 	@Override
-	public Interval getImage() {
+	public Interval getCodomain() {
 		return new Interval(new Range(
 				new Range.Endpoint(Double.NEGATIVE_INFINITY, false),
 				new Range.Endpoint(Math.log(Double.POSITIVE_INFINITY), false)));
