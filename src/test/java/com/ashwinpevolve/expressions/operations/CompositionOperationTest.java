@@ -12,10 +12,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.ashwin.evolve.expressions.Evaluable;
-import com.ashwin.evolve.expressions.intervals.AdditionOperation;
+import com.ashwin.evolve.expressions.intervals.CompositionOperation;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AdditionOperationTest {
+public class CompositionOperationTest {
 
 	@Mock
 	private Evaluable _e1, _e2;
@@ -23,12 +23,12 @@ public class AdditionOperationTest {
 	@Test
 	public void testEval() {
 		when(_e1.eval(BigDecimal.ZERO)).thenReturn(BigDecimal.ONE);
-		when(_e2.eval(BigDecimal.ZERO)).thenReturn(BigDecimal.ONE);
+		when(_e2.eval(BigDecimal.ONE)).thenReturn(BigDecimal.valueOf(2));
 		
-		AdditionOperation oper = new AdditionOperation(_e1, _e2);
+		CompositionOperation oper = new CompositionOperation(_e1, _e2);
 		assertEquals(BigDecimal.valueOf(2), oper.eval(BigDecimal.ZERO));
 		verify(_e1).eval(BigDecimal.ZERO);
-		verify(_e2).eval(BigDecimal.ZERO);
+		verify(_e2).eval(BigDecimal.ONE);
 	}
 	
 }

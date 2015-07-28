@@ -12,21 +12,21 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.ashwin.evolve.expressions.Evaluable;
-import com.ashwin.evolve.expressions.intervals.AdditionOperation;
+import com.ashwin.evolve.expressions.intervals.MultiplicationOperation;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AdditionOperationTest {
+public class MultiplicationOperationTest {
 
 	@Mock
 	private Evaluable _e1, _e2;
 	
 	@Test
-	public void testEval() {
-		when(_e1.eval(BigDecimal.ZERO)).thenReturn(BigDecimal.ONE);
-		when(_e2.eval(BigDecimal.ZERO)).thenReturn(BigDecimal.ONE);
+	public void testEval() {		
+		when(_e1.eval(BigDecimal.ZERO)).thenReturn(BigDecimal.valueOf(2));
+		when(_e2.eval(BigDecimal.ZERO)).thenReturn(BigDecimal.valueOf(3));
 		
-		AdditionOperation oper = new AdditionOperation(_e1, _e2);
-		assertEquals(BigDecimal.valueOf(2), oper.eval(BigDecimal.ZERO));
+		MultiplicationOperation oper = new MultiplicationOperation(_e1, _e2);
+		assertEquals(BigDecimal.valueOf(6), oper.eval(BigDecimal.ZERO));
 		verify(_e1).eval(BigDecimal.ZERO);
 		verify(_e2).eval(BigDecimal.ZERO);
 	}

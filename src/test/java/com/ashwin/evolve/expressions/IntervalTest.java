@@ -8,6 +8,9 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import com.ashwin.evolve.expressions.intervals.Interval;
+import com.ashwin.evolve.expressions.intervals.Range;
+
 public class IntervalTest {
 	
 	@Test

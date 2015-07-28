@@ -1,6 +1,9 @@
 package com.ashwin.evolve.expressions;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 
 /**
@@ -11,33 +14,18 @@ import java.math.BigDecimal;
  * @author ashwin
  * 
  */
-public interface Evaluable {
-	
-	public static final int PRECISION = 10;
-
-	/**
-	 * Returns the domain over which this Evaluable is valid. This domain is
-	 * guaranteed to be the EXACT domain over which this Evaluable is valid.
-	 * 
-	 * @return domain
-	 */
-	public Interval getDomain();
+public interface Evaluable extends Serializable {
 	
 	/**
-	 * Returns an APPROXIMATION of the codomain of this Evaluable. This
-	 * approximation is guaranteed to be an OVERESTIMATE of the actual image of
-	 * the Evaluable.
-	 * 
-	 * @return image
+	 * The MathContext (rounding, precision, etc.) to use when performing
+	 * BigDecimal calculations.
 	 */
-	public Interval getCodomain();
-
+	public static final MathContext CONTEXT = new MathContext(10, RoundingMode.HALF_UP);
+	
 	/**
-	 * Evaluates this Evaluable at the specified x-coordinate.
-	 * 
-	 * @param x
+	 * Calculates and returns the value of this Evaluable.
 	 * @return output
 	 */
-	public BigDecimal eval(BigDecimal x);
+	public BigDecimal eval();
 
 }

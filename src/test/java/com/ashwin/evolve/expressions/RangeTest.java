@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.ashwin.evolve.expressions.intervals.Range;
+
 public class RangeTest {
 
 	@Test

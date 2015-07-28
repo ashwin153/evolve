@@ -2,8 +2,9 @@ package com.ashwin.evolve.expressions;
 
 import java.math.BigDecimal;
 
-
 public class Expression implements Evaluable {
+
+	private static final long serialVersionUID = -5243010604049058716L;
 	
 	private Evaluable _root;
 	
@@ -12,22 +13,13 @@ public class Expression implements Evaluable {
 	}
 	
 	@Override
-	public Interval getDomain() {
-		return _root.getDomain();
+	public BigDecimal eval() {
+		return _root.eval();
 	}
 
-	@Override
-	public Interval getCodomain() {
-		return _root.getCodomain();
-	}
-
-	@Override
-	public BigDecimal eval(BigDecimal x) {
-		return _root.eval(x);
-	}
-	
 	@Override
 	public String toString() {
 		return _root.toString();
 	}
+	
 }
