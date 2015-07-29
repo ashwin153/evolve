@@ -1,14 +1,8 @@
 package com.ashwin.evolve.genetic;
 
-import java.awt.geom.Point2D;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 
-import com.ashwin.evolve.genetic.chromosomes.CurveChromosome;
-
+import com.ashwin.evolve.genetic.chromosomes.SortingChromosome;
 
 public class GeneticAlgorithm {
 	
@@ -17,29 +11,12 @@ public class GeneticAlgorithm {
 	private GeneticPopulation<?> _initial;
 	
 	public static void main(String[] args) {
-		List<Point2D> data = new ArrayList<Point2D>();
-		data.add(new Point2D.Double(0, 10));
-		data.add(new Point2D.Double(1, 3));
-		data.add(new Point2D.Double(10, 9));
+		GeneticAlgorithm alg = new GeneticAlgorithm(
+				SortingChromosome.getRandomPopulation(10000, 30));
 		
-		List<CurveChromosome> curves = CurveChromosome.getRandomPopulation(10, data).getChromosomes();
-		for(CurveChromosome c : curves) {
-			System.out.println(c);
-			System.out.println(c.getDomain());
-			System.out.println(c.getCodomain());
-			System.out.println(c.eval(BigDecimal.ZERO));
-			System.out.println(c.eval(BigDecimal.ONE));
-			System.out.println(c.eval(BigDecimal.valueOf(10)));
-		}
+		GeneticPopulation<?> pop = alg.run();
+		System.out.println(pop.getChromosomes().get(0));
 	}
-	
-//	public static void main(String[] args) {
-//		GeneticAlgorithm alg = new GeneticAlgorithm(
-//				SortingChromosome.getRandomPopulation(10000, 30));
-//		
-//		GeneticPopulation<?> pop = alg.run();
-//		System.out.println(pop.getChromosomes().get(0));
-//	}
 	
 	public GeneticAlgorithm(GeneticPopulation<?> initial) {
 		_initial = initial;
