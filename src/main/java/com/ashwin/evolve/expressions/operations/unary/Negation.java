@@ -7,8 +7,6 @@ import com.ashwin.evolve.expressions.Operation;
 
 public class Negation extends Operation {
 
-	private static final long serialVersionUID = 8897445137067931632L;
-
 	public Negation(Evaluable arg) {
 		super(arg);
 	}
@@ -16,6 +14,11 @@ public class Negation extends Operation {
 	@Override
 	public BigDecimal eval() {
 		return get(0).eval().negate(CONTEXT);
+	}
+	
+	@Override
+	public Negation copy() {
+		return new Negation(get(0).copy());
 	}
 	
 	@Override

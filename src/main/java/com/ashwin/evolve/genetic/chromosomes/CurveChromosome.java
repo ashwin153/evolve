@@ -1,13 +1,8 @@
 package com.ashwin.evolve.genetic.chromosomes;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 import com.ashwin.evolve.expressions.Constant;
 import com.ashwin.evolve.expressions.Evaluable;
@@ -16,15 +11,14 @@ import com.ashwin.evolve.expressions.Operation;
 import com.ashwin.evolve.expressions.Variable;
 import com.ashwin.evolve.expressions.operations.binary.Addition;
 import com.ashwin.evolve.expressions.operations.binary.Multiplication;
-import com.ashwin.evolve.expressions.operations.unary.AbsoluteValue;
 import com.ashwin.evolve.expressions.operations.unary.Cos;
-import com.ashwin.evolve.expressions.operations.unary.Negation;
 import com.ashwin.evolve.expressions.operations.unary.Sin;
 import com.ashwin.evolve.genetic.GeneticChromosome;
 import com.ashwin.evolve.genetic.GeneticPopulation;
 
 public class CurveChromosome extends Expression implements GeneticChromosome<CurveChromosome> {
-	
+
+	private BigDecimal[][] _points;
 	private double _fitness;
 	
 	/**
@@ -37,8 +31,9 @@ public class CurveChromosome extends Expression implements GeneticChromosome<Cur
 	 * @param root
 	 * @param variables
 	 */
-	public CurveChromosome(BigDecimal[][] points, Evaluable root, Variable...variables) {
+	public CurveChromosome(BigDecimal[][] points, Evaluable root, List<Variable> variables) {
 		super(root, variables);
+		_points = points;
 		
 		// The fitness is equal to the average squared differences between actual
 		// and observed values; less average difference is better.
@@ -47,7 +42,8 @@ public class CurveChromosome extends Expression implements GeneticChromosome<Cur
 			BigDecimal[] input = new BigDecimal[point.length - 1];
 			BigDecimal output  = point[point.length - 1];
 			System.arraycopy(point, 0, input, 0, input.length);
-			_fitness += eval(input).subtract(output).pow(2).divide(l).doubleValue();
+			
+			_fitness += eval(input).subtract(output).abs().divide(l).doubleValue();
 		}
 	}
 	
@@ -57,57 +53,36 @@ public class CurveChromosome extends Expression implements GeneticChromosome<Cur
 	}
 	
 	@Override
-	public CurveChromosome crossover(CurveChromosome mate, double rate) {
-		CurveChromosome copy = CurveChromosome.copy(this);
+	public CurveChromosome crossover(CurveChromosome mate, double rate) {		
+		Evaluable e1 = this.getRoot().copy();
+		Evaluable e2 = mate.getRoot().copy();
 		
-		Operation o1 = copy.getRandomOperation();
-		if(Math.random() < rate && o1 != null) {
-			Operation o2 = mate.getRandomOperation();
-			Evaluable rand = (o2 == null) ? mate.getRoot() : o2.get((int) (Math.random() * o2.arity()));
+		List<Operation> o1 = Expression.get(e1, Operation.class);
+		List<Operation> o2 = Expression.get(e2, Operation.class);
 			
-			int index = (int) (Math.random() * o1.arity());
-			o1.set(index, rand);
+		if(Math.random() < rate && !o1.isEmpty() && !o2.isEmpty()) {
+			Operation r1 = o1.get((int) (Math.random() * o1.size()));
+			Operation r2 = o2.get((int) (Math.random() * o2.size()));
+			
+			r1.set((int) (Math.random() * r1.arity()),
+					r2.get((int) (Math.random() * r2.arity())));
 		}
 		
-		return copy;
+		return new CurveChromosome(_points, e1, getVariables());
 	}
 	
 	@Override
 	public CurveChromosome mutate(double rate) {
-		CurveChromosome copy = CurveChromosome.copy(this);
-		
-		if(Math.random() < rate) {
-			Operation oper = copy.getRandomOperation();
-			int index = (int) (Math.random() * oper.arity());
-			oper.set(index, getRandomEvaluable(getVariables()));
+		Evaluable copy = getRoot().copy();
+		List<Operation> opers = Expression.get(copy, Operation.class);
+
+		if(Math.random() < rate && !opers.isEmpty()) {
+			Operation rand = opers.get((int) (Math.random() * opers.size()));
+			int index = (int) (Math.random() * rand.arity());
+			rand.set(index, getRandomEvaluable(getVariables()));
 		}
 		
-		return copy;
-	}
-	
-	/**
-	 * Returns a randomly selected operation from this expression. This is used
-	 * to select a point of crossover between two curve chromosomes.
-	 * 
-	 * @return
-	 */
-	private Operation getRandomOperation() {
-		List<Operation> operations = new ArrayList<Operation>();
-		Stack<Evaluable> stack = new Stack<Evaluable>();
-		stack.push(getRoot());
-
-		while (!stack.isEmpty()) {
-			Evaluable element = stack.pop();
-			if (element instanceof Operation) {
-				Operation oper = (Operation) element;
-				operations.add(oper);
-
-				for (int i = 0; i < oper.arity(); i++)
-					stack.push(oper.get(i));
-			}
-		}
-		
-		return (operations.isEmpty()) ? null : operations.get((int) (Math.random() * operations.size()));
+		return new CurveChromosome(_points, copy, getVariables());
 	}
 	
 	/**
@@ -117,24 +92,22 @@ public class CurveChromosome extends Expression implements GeneticChromosome<Cur
 	 * @param variables
 	 * @return
 	 */
-	private static Evaluable getRandomEvaluable(Variable... variables) {
+	private static Evaluable getRandomEvaluable(List<Variable> variables) {
 		// The greater the first number, the deeper the generated expression
 		// will be. It's simple probability!
-		switch((int) (Math.random() * 6)) {
-			case 0: return variables[(int) (Math.random() * variables.length)];
+		switch((int) (Math.random() * 3)) {
+			case 0: return variables.get((int) (Math.random() * variables.size()));
 			case 1: 
 				// Generates a new random constant using a power low distribution
 				int sign = (Math.random() < 0.50) ? 1 : -1;
-				double value = Math.pow(Math.random(), 5.0) * Double.MAX_VALUE;
+				double value = Math.pow(Math.random(), 10.0) * Double.MAX_VALUE;
 				return new Constant(sign * value);
 				
 			default: 
-				switch((int) (Math.random() * 6)) {
-					case 0: return new AbsoluteValue(getRandomEvaluable(variables));
-					case 1: return new Sin(getRandomEvaluable(variables));
-					case 2: return new Cos(getRandomEvaluable(variables));
-					case 3: return new Negation(getRandomEvaluable(variables));
-					case 4: return new Addition(getRandomEvaluable(variables), getRandomEvaluable(variables));
+				switch((int) (Math.random() * 4)) {
+					case 0: return new Sin(getRandomEvaluable(variables));
+					case 1: return new Cos(getRandomEvaluable(variables));
+					case 2: return new Addition(getRandomEvaluable(variables), getRandomEvaluable(variables));
 					default: return new Multiplication(getRandomEvaluable(variables), getRandomEvaluable(variables));
 				}
 		}
@@ -150,46 +123,17 @@ public class CurveChromosome extends Expression implements GeneticChromosome<Cur
 	 */
 	public static GeneticPopulation<CurveChromosome> getRandomPopulation(int size, BigDecimal[][] points) {
 		// Construct the variables that will be used to generate the population
-		Variable[] variables = new Variable[points[0].length - 1];
-		for(int i = 0; i < variables.length; i++)
-			variables[i] = new Variable("x" + i);
+		List<Variable> variables = new ArrayList<Variable>();
+		for(int i = 0; i < points[0].length - 1; i++)
+			variables.add(new Variable("x" + i));
 		
 		// Construct the population of curve chromosomes
 		List<CurveChromosome> chromosomes = new ArrayList<CurveChromosome>();
-		for(int i = 0; i < size; i++)
-			chromosomes.add(new CurveChromosome(points, getRandomEvaluable(variables), variables));
-		return new GeneticPopulation<CurveChromosome>(chromosomes);
-	}
-	
-	/**
-	 * Returns a deep copy of the given expression. This is used to prevent
-	 * destructively modifying an expression when performing operations on it.
-	 * 
-	 * @param expression
-	 * @return
-	 * @throws Exception
-	 */
-	public static CurveChromosome copy(CurveChromosome expression) {
-		ObjectOutputStream oos = null;
-		ObjectInputStream ois = null;
-		
-		try {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			oos = new ObjectOutputStream(bos);
-			oos.writeObject(expression);
-	        oos.flush();
-			
-	        ByteArrayInputStream bin = new ByteArrayInputStream(bos.toByteArray());
-	        ois = new ObjectInputStream(bin);
-	        CurveChromosome chromosome = (CurveChromosome) ois.readObject();
-	 
-	        oos.close();
-	        ois.close();
-	        
-	        return chromosome;
-		} catch(Exception e) {
-			// If we cannot copy the chromosome, then we cannot continue with execution
-			throw new RuntimeException("Unable to copy chromosome");
+		for(int i = 0; i < size; i++) {
+			Evaluable root = getRandomEvaluable(variables);
+			chromosomes.add(new CurveChromosome(points, root, variables));
 		}
+		
+		return new GeneticPopulation<CurveChromosome>(chromosomes);
 	}
 }

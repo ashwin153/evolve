@@ -7,8 +7,6 @@ import com.ashwin.evolve.expressions.Operation;
 
 public class AbsoluteValue extends Operation {
 		
-	private static final long serialVersionUID = 3370867631356541732L;
-
 	public AbsoluteValue(Evaluable arg) {
 		super(arg);
 	}
@@ -16,6 +14,11 @@ public class AbsoluteValue extends Operation {
 	@Override
 	public BigDecimal eval() {
 		return get(0).eval().abs(CONTEXT);
+	}
+	
+	@Override
+	public AbsoluteValue copy() {
+		return new AbsoluteValue(get(0).copy());
 	}
 	
 	@Override

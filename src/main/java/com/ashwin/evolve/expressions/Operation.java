@@ -15,8 +15,6 @@ package com.ashwin.evolve.expressions;
  * 
  */
 public abstract class Operation implements Evaluable {
-
-	private static final long serialVersionUID = -933974081196324447L;
 	
 	private Evaluable[] _operands;
 	
@@ -68,5 +66,5 @@ public abstract class Operation implements Evaluable {
 	public void set(int index, Evaluable evaluable) {
 		_operands[index] = evaluable;
 	}
-	
+
 }

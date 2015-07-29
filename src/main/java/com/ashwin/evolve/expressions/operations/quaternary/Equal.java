@@ -7,8 +7,6 @@ import com.ashwin.evolve.expressions.Operation;
 
 public class Equal extends Operation {
 	
-	private static final long serialVersionUID = -6176480828976002223L;
-
 	public Equal(Evaluable a, Evaluable b, Evaluable t, Evaluable f) {
 		super(a, b, t, f);
 	}
@@ -16,6 +14,11 @@ public class Equal extends Operation {
 	@Override
 	public BigDecimal eval() {
 		return (get(0).eval().compareTo(get(1).eval()) == 0) ? get(2).eval() : get(3).eval();
+	}
+	
+	@Override
+	public Equal copy() {
+		return new Equal(get(0).copy(), get(1).copy(), get(2).copy(), get(3).copy());
 	}
 	
 	@Override

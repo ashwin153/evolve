@@ -7,16 +7,19 @@ import com.ashwin.evolve.expressions.Operation;
 
 public class Sin extends Operation {
 
-	private static final long serialVersionUID = 5712951576216933072L;
-
 	public Sin(Evaluable arg) {
 		super(arg);
 	}
 	
 	@Override
 	public BigDecimal eval() {
-		BigDecimal mod = get(0).eval().remainder(BigDecimal.valueOf(2 * Math.PI), CONTEXT);
+		BigDecimal mod = get(0).eval().remainder(BigDecimal.valueOf(2 * Math.PI));
 		return BigDecimal.valueOf(Math.sin(mod.doubleValue()));
+	}
+	
+	@Override
+	public Sin copy() {
+		return new Sin(get(0).copy());
 	}
 	
 	@Override

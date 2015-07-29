@@ -7,8 +7,6 @@ import com.ashwin.evolve.expressions.Operation;
 
 public class Addition extends Operation {
 	
-	private static final long serialVersionUID = 7681322272303048393L;
-
 	public Addition(Evaluable left, Evaluable right) {
 		super(left, right);
 	}
@@ -16,6 +14,11 @@ public class Addition extends Operation {
 	@Override
 	public BigDecimal eval() {
 		return get(0).eval().add(get(1).eval(), CONTEXT);
+	}
+	
+	@Override
+	public Addition copy() {
+		return new Addition(get(0).copy(), get(1).copy());
 	}
 	
 	@Override

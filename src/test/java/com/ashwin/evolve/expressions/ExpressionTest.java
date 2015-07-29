@@ -3,6 +3,7 @@ package com.ashwin.evolve.expressions;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ public class ExpressionTest {
 						x),
 				y);
 		
-		Expression expr = new Expression(root, x, y);
+		Expression expr = new Expression(root, Arrays.asList(x, y));
 		assertEquals(BigDecimal.valueOf(-2), expr.eval(BigDecimal.ONE, BigDecimal.ONE));
 		assertEquals(BigDecimal.valueOf(-3), expr.eval(BigDecimal.ONE, BigDecimal.ZERO));
 		assertEquals(BigDecimal.valueOf(+1), expr.eval(BigDecimal.ZERO, BigDecimal.ONE));

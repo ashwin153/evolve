@@ -3,8 +3,6 @@ package com.ashwin.evolve.expressions;
 import java.math.BigDecimal;
 
 public class Variable implements Evaluable {
-
-	private static final long serialVersionUID = -1613801680630973834L;
 	
 	private String _name;
 	private BigDecimal _value;
@@ -43,6 +41,16 @@ public class Variable implements Evaluable {
 		return _value;
 	}
 	
+	/**
+	 * Variables are the only type of Evaluable that cannot be copied; This is
+	 * to ensure that we only have to maintain a few variable references
+	 * throughout the program.
+	 */
+	@Override
+	public Variable copy() {
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		return _name;

@@ -7,16 +7,19 @@ import com.ashwin.evolve.expressions.Operation;
 
 public class Cos extends Operation {
 
-	private static final long serialVersionUID = -3203547965092806989L;
-
 	public Cos(Evaluable arg) {
 		super(arg);
 	}
 	
 	@Override
 	public BigDecimal eval() {
-		BigDecimal mod = get(0).eval().remainder(BigDecimal.valueOf(2 * Math.PI), CONTEXT);
+		BigDecimal mod = get(0).eval().remainder(BigDecimal.valueOf(2 * Math.PI));
 		return BigDecimal.valueOf(Math.cos(mod.doubleValue()));
+	}
+	
+	@Override
+	public Cos copy() {
+		return new Cos(get(0).copy());
 	}
 	
 	@Override

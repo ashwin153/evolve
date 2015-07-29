@@ -7,8 +7,6 @@ import com.ashwin.evolve.expressions.Operation;
 
 public class Greater extends Operation {
 	
-	private static final long serialVersionUID = -8372340294794844390L;
-
 	public Greater(Evaluable a, Evaluable b, Evaluable t, Evaluable f) {
 		super(a, b, t, f);
 	}
@@ -16,6 +14,11 @@ public class Greater extends Operation {
 	@Override
 	public BigDecimal eval() {
 		return (get(0).eval().compareTo(get(1).eval()) > 0) ? get(2).eval() : get(3).eval();
+	}
+	
+	@Override
+	public Greater copy() {
+		return new Greater(get(0).copy(), get(1).copy(), get(2).copy(), get(3).copy());
 	}
 	
 	@Override

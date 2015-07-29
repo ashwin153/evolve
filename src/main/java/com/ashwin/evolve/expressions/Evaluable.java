@@ -1,6 +1,5 @@
 package com.ashwin.evolve.expressions;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -14,7 +13,7 @@ import java.math.RoundingMode;
  * @author ashwin
  * 
  */
-public interface Evaluable extends Serializable {
+public interface Evaluable {
 	
 	/**
 	 * The MathContext (rounding, precision, etc.) to use when performing
@@ -27,5 +26,11 @@ public interface Evaluable extends Serializable {
 	 * @return output
 	 */
 	public BigDecimal eval();
-
+	
+	/**
+	 * Returns a copy of this evaluable object.
+	 * @return copy
+	 */
+	public Evaluable copy();
+	
 }

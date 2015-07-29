@@ -18,8 +18,8 @@ public class Constant extends BigDecimal implements Evaluable {
 		super(value);
 	}
 	
-	public Constant(String str) {
-		super(str);
+	public Constant(BigDecimal value) {
+		super(value.toString());
 	}
 	
 	@Override
@@ -28,7 +28,7 @@ public class Constant extends BigDecimal implements Evaluable {
 	}
 	
 	@Override
-	public String toString() {
-		return round(CONTEXT).toString();
+	public Constant copy() {
+		return new Constant(this);
 	}
 }
