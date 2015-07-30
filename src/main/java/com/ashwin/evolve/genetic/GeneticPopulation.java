@@ -5,9 +5,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 public class GeneticPopulation<T extends GeneticChromosome<T>> {
 	
 	private List<T> _pop;
+	private GeneticFactory<T, ?> _factory;
 
 	/**
 	 * Builds a randomized population of the specified size. This constructor is
@@ -15,11 +19,25 @@ public class GeneticPopulation<T extends GeneticChromosome<T>> {
 	 * 
 	 * @param size
 	 */
-	public GeneticPopulation(List<T> pop) {
-		_pop = pop;		
+	public GeneticPopulation(List<T> pop, GeneticFactory<T, ?> factory) {
+		_factory = factory;
+
+		// Cache fitness of chromosomes to speed up sorting process
+		List<Pair<T, Double>> sort = new ArrayList<Pair<T, Double>>();
+		for(T member : pop)
+			sort.add(new ImmutablePair<T, Double>(
+					member, _factory.getFitness(member)));
+
+		Collections.sort(sort, new Comparator<Pair<T, Double>>() {
+			@Override
+			public int compare(Pair<T, Double> o1, Pair<T, Double> o2) {
+				return Double.compare(o1.getValue(), o2.getValue());
+			}
+		});
 		
-		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
-		Collections.sort(_pop, new FitnessComparator());
+		_pop = new ArrayList<T>();
+		for(Pair<T, Double> pair : sort)
+			_pop.add(pair.getKey());
 	}
 	
 	public List<T> getChromosomes() {
@@ -27,14 +45,7 @@ public class GeneticPopulation<T extends GeneticChromosome<T>> {
 	}
 	
 	public double getBestFitness() {
-		return _pop.get(0).fitness();
-	}
-	
-	public double getAverageFitness() {
-		double avg = 0.0;
-		for(T chromosome : _pop)
-			avg += chromosome.fitness();
-		return avg / _pop.size();
+		return _factory.getFitness(_pop.get(0));
 	}
 	
 	/**
@@ -67,7 +78,7 @@ public class GeneticPopulation<T extends GeneticChromosome<T>> {
 			next.add(child);
 		}
 		
-		return new GeneticPopulation<T>(next);
+		return new GeneticPopulation<T>(next, _factory);
 	}
 	
 	/**
@@ -87,17 +98,5 @@ public class GeneticPopulation<T extends GeneticChromosome<T>> {
 		}
 		
 		return _pop.get(minIndex);
-	}
-	
-	/**
-	 * This class is responsible for comparing two chromosomes. It is used
-	 * by the evolve function to sort the population by their fitness values.
-	 * 
-	 * @author ashwin
-	 */
-	private class FitnessComparator implements Comparator<T> {
-		public int compare(T o1, T o2) {
-			return Double.compare(o1.fitness(), o2.fitness());
-		}
 	}
 }

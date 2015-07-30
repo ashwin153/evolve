@@ -18,20 +18,17 @@ public class Memory {
 	 */
 	public Memory(String name, int size, Integer value) {
 		_name = name;
-		_cells = new ArrayList<Integer>(); 
-		for(int i = 0; i < size; i++)
-			_cells.add(value);
+		reset(size, value);
 	}
 	
 	/**
-	 * Fills a block of memory with the specified values.
-	 * 
-	 * @param values
+	 * Resizes the memory object and resets its contents to the specified value. 
+	 * @param size
+	 * @param value
 	 */
-	public Memory(String name, int[] values) {
-		_name = name;
-		_cells = new ArrayList<Integer>();
-		for(int value : values)
+	public void reset(int size, Integer value) {
+		_cells = new ArrayList<Integer>(); 
+		for(int i = 0; i < size; i++)
 			_cells.add(value);
 	}
 	

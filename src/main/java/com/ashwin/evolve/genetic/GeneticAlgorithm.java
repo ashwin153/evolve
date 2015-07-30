@@ -1,26 +1,19 @@
 package com.ashwin.evolve.genetic;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-import com.ashwin.evolve.genetic.chromosomes.CurveChromosome;
+import com.ashwin.evolve.genetic.factories.CurveFittingFactory;
 
 public class GeneticAlgorithm {
 	
-	private static final Logger LOGGER = Logger.getLogger(GeneticAlgorithm.class);
-	
-	private GeneticPopulation<?> _initial;
-	
-//	public static void main(String[] args) {
-//		GeneticAlgorithm alg = new GeneticAlgorithm(
-//				SortingChromosome.getRandomPopulation(10000, 30));
-//		
-//		GeneticPopulation<?> pop = alg.run();
-//		System.out.println(pop.getChromosomes().get(0));
-//	}
-	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException, IOException {
 		BigDecimal[][] tests = new BigDecimal[100][2];
 		for(int i = 0; i < tests.length; i++) {
 			BigDecimal x = BigDecimal.valueOf(Math.random() * 4 - 2);
@@ -28,29 +21,44 @@ public class GeneticAlgorithm {
 					BigDecimal.valueOf(3).multiply(x.pow(4))).add(
 							BigDecimal.valueOf(-2).multiply(x.pow(3))).add(
 									x.subtract(BigDecimal.valueOf(2)));
-			
 			tests[i] = new BigDecimal[] { x, y };
 		}
 		
-		GeneticAlgorithm alg = new GeneticAlgorithm(
-				CurveChromosome.getRandomPopulation(1000, tests));
+		Properties props = new Properties();
+		props.load(new FileInputStream(new File("./src/main/resources/ga.properties")));
 		
-		GeneticPopulation<?> pop = alg.run();
-		System.out.println(pop.getChromosomes().get(0));
+		GeneticFactory<?, ?> factory = new CurveFittingFactory(tests);
+		GeneticAlgorithm algorithm	 = new GeneticAlgorithm(factory);
+		GeneticPopulation<?> evolved = algorithm.run(props);
+		System.out.println(evolved.getChromosomes().get(0));
 	}
 	
-	public GeneticAlgorithm(GeneticPopulation<?> initial) {
-		_initial = initial;
+	
+	private static final Logger LOGGER = Logger.getLogger(GeneticAlgorithm.class);
+	
+	private GeneticFactory<?, ?> _factory;
+	
+	public GeneticAlgorithm(GeneticFactory<?, ?> factory) {
+		_factory = factory;
 	}
 	
-	public GeneticPopulation<?> run() {
-		GeneticPopulation<?> pop = _initial;
-		LOGGER.info(String.format("%6s\t%15s\t%15s", "Gen", "Best", "Average"));
-		LOGGER.info(String.format("%6d\t%15.8f\t%15.8f", 0, pop.getBestFitness(), pop.getAverageFitness()));
+	public GeneticPopulation<?> run(Properties props) {
+		// Load the Genetic Algorithm Properties
+		int endGen			= Integer.valueOf(props.getProperty("ga.end.gen"));
+		double endFitness	= Double.valueOf(props.getProperty("ga.end.fitness"));
+		int size 		 	= Integer.valueOf(props.getProperty("ga.pop.size"));
+		double crossover 	= Double.valueOf(props.getProperty("ga.pop.crossover"));
+		double mutation  	= Double.valueOf(props.getProperty("ga.pop.mutation"));
+		double elitism   	= Double.valueOf(props.getProperty("ga.pop.elitism"));
+		int tournament 	 	= Integer.valueOf(props.getProperty("ga.pop.tournament"));
+
+		GeneticPopulation<?> pop = _factory.getRandomPopulation(size);
+		LOGGER.info(String.format("%6s\t%15s", "Gen", "Best"));
+		LOGGER.info(String.format("%6d\t%15.8f", 0, pop.getBestFitness()));
 		
-		for(int i = 1; i < 1000; i++) {
-			pop = pop.evolve(0.95, 0.25, 0.05, 3);
-			LOGGER.info(String.format("%6d\t%15.8f\t%15.8f", i, pop.getBestFitness(), pop.getAverageFitness()));
+		for(int i = 1; i <= endGen && pop.getBestFitness() > endFitness; i++) {
+			pop = pop.evolve(crossover, mutation, elitism, tournament);
+			LOGGER.info(String.format("%6d\t%15.8f", i, pop.getBestFitness()));
 		}
 		
 		return pop;

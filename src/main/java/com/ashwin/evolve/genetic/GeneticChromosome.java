@@ -3,16 +3,6 @@ package com.ashwin.evolve.genetic;
 public interface GeneticChromosome<T extends GeneticChromosome<T>> {
 
 	/**
-	 * Returns the fitness of the specified chromosome. Because each population
-	 * will have a different cost function, we leave the definition of this
-	 * methods to subclasses.
-	 * 
-	 * @param chromosome
-	 * @return fitness
-	 */
-	abstract public double fitness();
-	
-	/**
 	 * Non-destructively performs crossover with this chromosome and the
 	 * specified mate and returns their child.
 	 * 

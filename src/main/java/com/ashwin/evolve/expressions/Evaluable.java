@@ -19,7 +19,7 @@ public interface Evaluable {
 	 * The MathContext (rounding, precision, etc.) to use when performing
 	 * BigDecimal calculations.
 	 */
-	public static final MathContext CONTEXT = new MathContext(10, RoundingMode.HALF_UP);
+	public static final MathContext CONTEXT = new MathContext(15, RoundingMode.HALF_UP);
 	
 	/**
 	 * Calculates and returns the value of this Evaluable.
